@@ -1,0 +1,393 @@
+@import "tailwindcss";
+
+@theme {
+  /* =========================================================================
+     1. TYPOGRAPHY SYSTEM
+     ========================================================================= */
+  /* Display font for headings */
+  --font-display: var(--font-dynapuff), system-ui, sans-serif;
+  /* Body font for standard text */
+  --font-body: var(--font-nunito), system-ui, sans-serif;
+
+  /* =========================================================================
+     2. SPACING SYSTEM (STRICT 8px GRID)
+     ========================================================================= */
+  --spacing-8: 8px;
+  --spacing-16: 16px;
+  --spacing-24: 24px;
+  --spacing-32: 32px;
+  --spacing-40: 40px;
+  --spacing-48: 48px;
+  --spacing-64: 64px;
+  --spacing-80: 80px;
+  --spacing-96: 96px;
+  --spacing-128: 128px;
+  --spacing-fluid-section: clamp(4rem, 8vw, 8rem);
+
+  /* =========================================================================
+     3. COLOR PALETTE (VIBRANT & PASTEL)
+     ========================================================================= */
+
+  /* Kawaii Neutrals */
+  --color-canvas: #FFFDFC;
+  /* Slightly warmer background */
+  --color-surface: #FFFFFF;
+  --color-ink: #2C2C2C;
+  --color-ink-muted: #666666;
+  --color-border: #F0EBE6;
+
+  /* Kawaii Accents */
+  --color-melon: #FF8BA7;
+  --color-mint: #B8E8D5;
+  --color-babyblue: #A9D1F7;
+  --color-rose: #FFC4D4;
+  --color-lilac: #D4C4FC;
+  --color-charcoal: #332C39;
+  --color-vanilla: #FFFDF5;
+
+  /* Status Colors */
+  --color-danger: #FF6B6B;
+  --color-success: #B8E8D5;
+
+  /* =========================================================================
+     4. TACTILE PROPERTIES & SHADOWS (MARSHMALLOW)
+     ========================================================================= */
+  --radius-sm: 12px;
+  --radius-md: 24px;
+  --radius-lg: 32px;
+  --radius-full: 9999px;
+
+  /* Dimensional Shadows (Diffused for softness) */
+  --shadow-tactile: 0 16px 40px -8px rgba(255, 139, 167, 0.12),
+    0 6px 16px -4px rgba(255, 139, 167, 0.08);
+  --shadow-tactile-hover: 0 24px 48px -12px rgba(255, 139, 167, 0.25),
+    0 12px 24px -8px rgba(255, 139, 167, 0.15),
+    0 0 0 2px var(--color-surface) inset;
+  --shadow-glow-melon: 0 0 20px rgba(255, 139, 167, 0.4);
+
+  /* OS Theme Colors mapped to custom variables (for Light/Dark toggle) */
+  --color-os-bg: var(--os-bg);
+  --color-os-surface: var(--os-surface);
+  --color-os-border: var(--os-border);
+  --color-os-text: var(--os-text);
+  --color-os-text-muted: var(--os-text-muted);
+  --color-os-primary: var(--os-primary);
+  --color-os-primary-fg: var(--os-primary-fg);
+  --color-os-danger: var(--os-danger);
+  --color-os-success: var(--os-success);
+}
+
+@layer base {
+  :root {
+    --bg-canvas: var(--color-canvas);
+    --text-ink: var(--color-ink);
+
+    /* OS Theme - Light Mode */
+    --os-bg: #F9FAFB;
+    --os-surface: #FFFFFF;
+    --os-border: #E5E7EB;
+    --os-text: #111827;
+    --os-text-muted: #6B7280;
+    --os-primary: #111827;
+    --os-primary-fg: #FFFFFF;
+    --os-danger: #EF4444;
+    --os-success: #10B981;
+  }
+
+  .dark {
+    /* OS Theme - Dark Mode */
+    --os-bg: #030712;
+    --os-surface: #111827;
+    --os-border: #1F2937;
+    --os-text: #F9FAFB;
+    --os-text-muted: #9CA3AF;
+    --os-primary: #FFFFFF;
+    --os-primary-fg: #111827;
+    --os-danger: #F87171;
+    --os-success: #34D399;
+  }
+
+  /* Reset & Box Sizing */
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+    border-color: var(--color-border);
+  }
+
+  html {
+    /* Fluid base font size — reduced ~15% for calmer visual scale */
+    font-size: clamp(13px, 0.8vw + 9px, 16px);
+    scroll-behavior: smooth;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  body {
+    background-color: var(--bg-canvas);
+    color: var(--text-ink);
+    font-family: var(--font-body);
+    line-height: 1.65;
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
+  }
+
+  /* Clean up focus outlines */
+  *:focus-visible {
+    outline: 3px solid var(--color-melon);
+    outline-offset: 2px;
+  }
+
+  /* Fluid Typography for Headings */
+  h1,
+  .h1 {
+    font-family: var(--font-display);
+    font-size: clamp(2rem, 4vw, 3.25rem);
+    line-height: 1.15;
+    letter-spacing: -0.03em;
+    font-weight: 700;
+  }
+
+  h2,
+  .h2 {
+    font-family: var(--font-display);
+    font-size: clamp(1.6rem, 3vw, 2.25rem);
+    line-height: 1.25;
+    letter-spacing: -0.01em;
+    font-weight: 700;
+  }
+
+  h3,
+  .h3 {
+    font-family: var(--font-display);
+    font-size: clamp(1.25rem, 2.5vw, 1.625rem);
+    line-height: 1.3;
+    font-weight: 600;
+  }
+
+  h4,
+  .h4 {
+    font-family: var(--font-display);
+    font-size: clamp(1.25rem, 2vw, 1.5rem);
+    line-height: 1.4;
+    font-weight: 600;
+  }
+
+  p {
+    margin-bottom: 1em;
+    font-size: 1rem;
+    color: var(--color-ink-muted);
+    font-weight: 500;
+  }
+
+  a {
+    color: inherit;
+    text-decoration: none;
+    transition: opacity 150ms ease;
+  }
+
+  a:hover {
+    opacity: 0.7;
+  }
+}
+
+/* =========================================================================
+   COMPONENTS & UTILITIES
+   ========================================================================= */
+@layer components {
+
+  /* The primary container: Max width prevents stretching, padding scales. */
+  .layout-container {
+    @apply w-full max-w-[1120px] mx-auto px-6 sm:px-10 md:px-16;
+  }
+
+  /* --- Buttons --- */
+  .btn-primary {
+    @apply inline-flex items-center justify-center px-8 py-4 bg-melon text-white font-display font-bold text-base transition-all duration-300 cursor-pointer shadow-tactile;
+    border-radius: var(--radius-full);
+  }
+
+  .btn-primary:hover {
+    @apply bg-[#ff7396] shadow-tactile-hover;
+    transform: translateY(-2px);
+  }
+
+  .btn-primary:active {
+    transform: translateY(0);
+  }
+
+  .btn-primary:disabled {
+    @apply bg-border text-ink-muted shadow-none cursor-not-allowed transform-none;
+  }
+
+  .btn-secondary {
+    @apply inline-flex items-center justify-center px-8 py-4 bg-white border-2 border-border text-charcoal font-display font-bold text-base transition-all duration-300 cursor-pointer shadow-sm;
+    border-radius: var(--radius-full);
+  }
+
+  .btn-secondary:hover {
+    @apply border-melon text-melon shadow-tactile;
+    transform: translateY(-2px);
+  }
+
+  .btn-icon {
+    @apply p-3 rounded-full transition-all duration-300 text-charcoal bg-white shadow-sm border border-border hover:border-melon hover:text-melon hover:shadow-tactile;
+  }
+
+  /* --- Inputs --- */
+  .input-fluid {
+    @apply w-full bg-white border-2 border-border py-4 px-6 text-charcoal rounded-[24px] font-body font-bold placeholder:text-charcoal/40 focus:outline-none focus:border-melon focus:shadow-[0_0_0_4px_#ff8ba726] transition-all duration-300 text-base;
+  }
+
+  .input-clean {
+    @apply w-full bg-white border border-border py-4 px-6 text-charcoal rounded-[16px] font-body placeholder:text-charcoal/40 focus:outline-none focus:border-melon focus:ring-2 focus:ring-melon/20 transition-all duration-300 text-base;
+  }
+
+  /* --- Cards --- */
+  .bento-card {
+    @apply relative overflow-hidden bg-white border-2 border-border transition-all duration-500 rounded-[32px];
+  }
+
+  .bento-card:hover {
+    @apply border-melon shadow-tactile-hover;
+    transform: translateY(-4px);
+  }
+
+  .card-minimal {
+    @apply bg-surface border border-border p-6 sm:p-8;
+    border-radius: var(--radius-md);
+  }
+
+  /* --- Badges --- */
+  .badge-premium {
+    @apply inline-flex items-center gap-1 px-4 py-2 rounded-full font-display font-bold text-xs uppercase tracking-wide border border-white/20;
+  }
+
+  /* Utilities */
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  /* --- Kumoo OS Primitives --- */
+  .os-panel {
+    @apply bg-os-surface border border-os-border rounded-xl shadow-sm text-os-text overflow-hidden;
+  }
+
+  .os-input {
+    @apply w-full bg-os-bg border border-os-border px-3 py-2 text-sm text-os-text rounded-lg placeholder:text-os-text-muted focus:outline-none focus:ring-2 focus:ring-os-primary focus:border-transparent transition-all;
+  }
+
+  .os-btn-primary {
+    @apply inline-flex items-center justify-center px-4 py-2 bg-os-primary text-os-primary-fg font-medium text-sm rounded-lg hover:opacity-90 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+
+  .os-btn-secondary {
+    @apply inline-flex items-center justify-center px-4 py-2 bg-os-surface border border-os-border text-os-text font-medium text-sm rounded-lg hover:bg-os-bg transition-colors disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+
+  .os-btn-danger {
+    @apply inline-flex items-center justify-center px-4 py-2 bg-os-danger text-white font-medium text-sm rounded-lg hover:opacity-90 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+
+  .os-table-th {
+    @apply px-4 py-3 text-left text-xs font-semibold text-os-text-muted uppercase tracking-wider border-b border-os-border bg-os-bg/50;
+  }
+
+  .os-table-td {
+    @apply px-4 py-4 text-sm text-os-text border-b border-os-border;
+  }
+}
+
+/* =========================================================================
+   ANIMATIONS
+   ========================================================================= */
+@keyframes floatY {
+
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-15px);
+  }
+}
+
+@keyframes floatX {
+
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+
+  50% {
+    transform: translateX(15px);
+  }
+}
+
+@keyframes blob {
+  0% {
+    transform: translate(0px, 0px) scale(1);
+  }
+
+  33% {
+    transform: translate(30px, -50px) scale(1.1);
+  }
+
+  66% {
+    transform: translate(-20px, 20px) scale(0.9);
+  }
+
+  100% {
+    transform: translate(0px, 0px) scale(1);
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.anim-float-y {
+  animation: floatY 6s ease-in-out infinite;
+}
+
+.anim-float-x {
+  animation: floatX 8s ease-in-out infinite;
+}
+
+.anim-blob {
+  animation: blob 7s infinite alternate;
+}
+
+.anim-fade-in-up {
+  opacity: 0;
+  animation: fadeInUp 0.8s ease-out forwards;
+}
+
+/* Custom Scrollbar for a playful but refined feel */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--color-canvas);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-rose);
+  border-radius: 8px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-melon);
+}
