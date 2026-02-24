@@ -59,32 +59,13 @@ export async function submitOrder(
 
     // Attempt to sync to Customer CRM (Failures here should not crash the order)
     try {
-        // We use phone number as the unique identifier for guest checkout
-        const { data: existingCustomer } = await supabase
-            .from('customers')
-            .select('id, total_spend')
-            .eq('phone', orderData.phone)
-            .single();
+        const { error: crmError } = await supabase.rpc('sync_checkout_customer', {
+            p_name: orderData.name,
+            p_phone: orderData.phone,
+            p_amount: orderData.total
+        });
 
-        if (existingCustomer) {
-            await supabase
-                .from('customers')
-                .update({
-                    first_name: orderData.name.split(' ')[0] || '',
-                    last_name: orderData.name.split(' ').slice(1).join(' ') || '',
-                    total_spend: Number(existingCustomer.total_spend || 0) + Number(orderData.total)
-                })
-                .eq('id', existingCustomer.id);
-        } else {
-            await supabase
-                .from('customers')
-                .insert({
-                    first_name: orderData.name.split(' ')[0] || '',
-                    last_name: orderData.name.split(' ').slice(1).join(' ') || '',
-                    phone: orderData.phone,
-                    total_spend: orderData.total
-                });
-        }
+        if (crmError) throw crmError;
     } catch (crmError) {
         console.warn("Non-fatal CRM sync error:", crmError);
     }
