@@ -8,6 +8,7 @@ import { WhatsAppPill } from "@/components/WhatsAppPill";
 import { FloatingCart } from "@/components/FloatingCart";
 import { MetaPixel } from "@/components/MetaPixel";
 import { PromoBanner } from "@/components/PromoBanner";
+import { StorefrontUI } from "@/components/StorefrontUI";
 
 const dynaPuff = DynaPuff({
   variable: "--font-dynapuff",
@@ -48,12 +49,19 @@ export default function RootLayout({
   return (
     <html lang="en" className="scroll-smooth">
       <body className={`${nunito.variable} ${dynaPuff.variable} font-body antialiased min-h-screen flex flex-col selection:bg-melon selection:text-white`}>
-        <PromoBanner />
-        <Navbar />
+        <StorefrontUI>
+          <PromoBanner />
+          <Navbar />
+        </StorefrontUI>
+
         <main className="flex-grow">{children}</main>
-        <Footer />
-        <WhatsAppPill />
-        <FloatingCart />
+
+        <StorefrontUI>
+          <Footer />
+          <WhatsAppPill />
+          <FloatingCart />
+        </StorefrontUI>
+
         <Suspense fallback={null}>
           <MetaPixel />
         </Suspense>

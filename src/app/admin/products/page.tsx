@@ -1,9 +1,39 @@
 import React from 'react';
 import { createClient } from '@/utils/supabase/server';
+import Link from 'next/link';
+import { ProductTableControls } from './ProductTableControls';
 
-export default async function AdminProductsPage() {
+export default async function AdminProductsPage({
+    searchParams
+}: {
+    searchParams: Promise<{ [key: string]: string | string[] | undefined }>
+}) {
     const supabase = await createClient();
-    const { data: products } = await supabase.from('products').select('*').order('created_at', { ascending: false });
+    const resolvedParams = await searchParams;
+
+    // Pagination
+    const page = typeof resolvedParams.page === 'string' ? parseInt(resolvedParams.page) : 1;
+    const limit = 10;
+    const from = (page - 1) * limit;
+    const to = from + limit - 1;
+
+    // Sorting
+    const sort = typeof resolvedParams.sort === 'string' ? resolvedParams.sort : 'newest';
+    let sortCol = 'created_at';
+    let ascending = false;
+
+    if (sort === 'oldest') { ascending = true; }
+    else if (sort === 'price_asc') { sortCol = 'price'; ascending = true; }
+    else if (sort === 'price_desc') { sortCol = 'price'; ascending = false; }
+    else if (sort === 'name_asc') { sortCol = 'name'; ascending = true; }
+
+    const { data: products, count } = await supabase
+        .from('products')
+        .select('*', { count: 'exact' })
+        .order(sortCol, { ascending })
+        .range(from, to);
+
+    const totalPages = count ? Math.ceil(count / limit) : 1;
 
     return (
         <div>
@@ -12,7 +42,7 @@ export default async function AdminProductsPage() {
                     <h1 className="font-display font-bold text-2xl text-os-primary mb-1">Products</h1>
                     <p className="text-os-text-muted font-medium text-sm">Manage your catalog and inventory.</p>
                 </header>
-                <button className="os-btn-primary">Add New Product</button>
+                <Link href="/admin/products/new" className="os-btn-primary">Add New Product</Link>
             </div>
 
             <div className="os-panel">
@@ -53,6 +83,15 @@ export default async function AdminProductsPage() {
                             )}
                         </tbody>
                     </table>
+                </div>
+
+                {/* Pagination & Sorting Controls */}
+                <div className="pt-4 border-t border-os-border px-1">
+                    <ProductTableControls
+                        currentPage={page}
+                        totalPages={totalPages}
+                        currentSort={sort}
+                    />
                 </div>
             </div>
         </div>
