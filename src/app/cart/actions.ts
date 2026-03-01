@@ -1,6 +1,7 @@
 'use server'
 
 import { createClient } from '@/utils/supabase/server'
+import { DELIVERY_ZONES } from '@/lib/config'
 
 export async function validatePromoCode(code: string) {
     const supabase = await createClient();
@@ -20,9 +21,37 @@ export async function validatePromoCode(code: string) {
 
 export async function submitOrder(
     orderData: { name: string; phone: string; address: string; area: string; total: number },
-    items: { id: string; name: string; price: number; quantity: number; image: string; variant?: string }[]
+    items: { id: string; name: string; price: number; quantity: number; image: string; size?: string; color?: string; }[]
 ) {
     const supabase = await createClient();
+
+    if (!items || items.length === 0) {
+        return { error: 'Cannot submit an empty order.' };
+    }
+
+    // SERVER-SIDE TOTAL RECALCULATION — never trust the client
+    const productIds = [...new Set(items.map(i => i.id))];
+    const { data: dbProducts, error: priceError } = await supabase
+        .from('products')
+        .select('id, price')
+        .in('id', productIds);
+
+    if (priceError || !dbProducts || dbProducts.length === 0) {
+        return { error: 'Failed to verify product prices.' };
+    }
+
+    const priceMap = new Map(dbProducts.map(p => [p.id, Number(p.price)]));
+    const zone = orderData.area === 'inside' ? 'inside' : 'outside';
+    const shippingFee = DELIVERY_ZONES[zone].fee;
+    let serverTotal = shippingFee;
+
+    for (const item of items) {
+        const dbPrice = priceMap.get(item.id);
+        if (dbPrice === undefined) {
+            return { error: `Product "${item.name}" not found or no longer available.` };
+        }
+        serverTotal += dbPrice * item.quantity;
+    }
 
     const { data: order, error: orderError } = await supabase
         .from('orders')
@@ -30,7 +59,7 @@ export async function submitOrder(
             customer_name: orderData.name,
             customer_phone: orderData.phone,
             address: `${orderData.address} (Zone: ${orderData.area})`,
-            total_amount: orderData.total,
+            total_amount: serverTotal,
             status: 'pending'
         })
         .select()
@@ -45,7 +74,7 @@ export async function submitOrder(
         order_id: order.id,
         product_id: item.id,
         quantity: item.quantity,
-        variant: item.variant || null
+        variant: [item.size, item.color].filter(Boolean).join(' - ') || null
     }));
 
     const { error: itemsError } = await supabase

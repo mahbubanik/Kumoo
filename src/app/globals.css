@@ -5,9 +5,11 @@
      1. TYPOGRAPHY SYSTEM
      ========================================================================= */
   /* Display font for headings */
-  --font-display: var(--font-dynapuff), system-ui, sans-serif;
+  --font-display: 'Montserrat', var(--font-dynapuff), system-ui, sans-serif;
   /* Body font for standard text */
-  --font-body: var(--font-nunito), system-ui, sans-serif;
+  --font-body: 'Poppins', var(--font-nunito), system-ui, sans-serif;
+  /* Handwriting font for artist diary annotations */
+  --font-handwriting: var(--font-caveat), cursive;
 
   /* =========================================================================
      2. SPACING SYSTEM (STRICT 8px GRID)
@@ -29,15 +31,15 @@
      ========================================================================= */
 
   /* Kawaii Neutrals */
-  --color-canvas: #FFFDFC;
-  /* Slightly warmer background */
+  --color-canvas: #FFFFFF;
   --color-surface: #FFFFFF;
-  --color-ink: #2C2C2C;
-  --color-ink-muted: #666666;
-  --color-border: #F0EBE6;
+  --color-ink: #333333;
+  --color-ink-muted: #595959;
+  /* WCAG AA accessible contrast */
+  --color-border: #F0F0F0;
 
   /* Kawaii Accents */
-  --color-melon: #FF8BA7;
+  --color-melon: #A98FBE;
   --color-mint: #B8E8D5;
   --color-babyblue: #A9D1F7;
   --color-rose: #FFC4D4;
@@ -52,18 +54,19 @@
   /* =========================================================================
      4. TACTILE PROPERTIES & SHADOWS (MARSHMALLOW)
      ========================================================================= */
+  --radius-xs: 4px;
   --radius-sm: 12px;
   --radius-md: 24px;
-  --radius-lg: 32px;
+  --radius-lg: 28px;
   --radius-full: 9999px;
 
   /* Dimensional Shadows (Diffused for softness) */
-  --shadow-tactile: 0 16px 40px -8px rgba(255, 139, 167, 0.12),
-    0 6px 16px -4px rgba(255, 139, 167, 0.08);
-  --shadow-tactile-hover: 0 24px 48px -12px rgba(255, 139, 167, 0.25),
-    0 12px 24px -8px rgba(255, 139, 167, 0.15),
+  --shadow-tactile: 0 16px 40px -8px rgba(169, 143, 190, 0.12),
+    0 6px 16px -4px rgba(169, 143, 190, 0.08);
+  --shadow-tactile-hover: 0 24px 48px -12px rgba(169, 143, 190, 0.25),
+    0 12px 24px -8px rgba(169, 143, 190, 0.15),
     0 0 0 2px var(--color-surface) inset;
-  --shadow-glow-melon: 0 0 20px rgba(255, 139, 167, 0.4);
+  --shadow-glow-melon: 0 0 20px rgba(169, 143, 190, 0.4);
 
   /* OS Theme Colors mapped to custom variables (for Light/Dark toggle) */
   --color-os-bg: var(--os-bg);
@@ -116,8 +119,8 @@
   }
 
   html {
-    /* Fluid base font size — reduced ~15% for calmer visual scale */
-    font-size: clamp(13px, 0.8vw + 9px, 16px);
+    /* Use browser default 16px base. Fluid clamp was breaking WCAG 1.4.4 zoom. */
+    font-size: 100%;
     scroll-behavior: smooth;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
@@ -135,8 +138,8 @@
 
   /* Clean up focus outlines */
   *:focus-visible {
-    outline: 3px solid var(--color-melon);
-    outline-offset: 2px;
+    outline: 2px solid rgba(169, 143, 190, 0.5);
+    outline-offset: 3px;
   }
 
   /* Fluid Typography for Headings */
@@ -145,7 +148,7 @@
     font-family: var(--font-display);
     font-size: clamp(2rem, 4vw, 3.25rem);
     line-height: 1.15;
-    letter-spacing: -0.03em;
+    letter-spacing: -0.02em;
     font-weight: 700;
   }
 
@@ -154,7 +157,7 @@
     font-family: var(--font-display);
     font-size: clamp(1.6rem, 3vw, 2.25rem);
     line-height: 1.25;
-    letter-spacing: -0.01em;
+    letter-spacing: -0.03em;
     font-weight: 700;
   }
 
@@ -163,6 +166,7 @@
     font-family: var(--font-display);
     font-size: clamp(1.25rem, 2.5vw, 1.625rem);
     line-height: 1.3;
+    letter-spacing: -0.015em;
     font-weight: 600;
   }
 
@@ -188,7 +192,7 @@
   }
 
   a:hover {
-    opacity: 0.7;
+    opacity: 0.85;
   }
 }
 
@@ -209,7 +213,7 @@
   }
 
   .btn-primary:hover {
-    @apply bg-[#ff7396] shadow-tactile-hover;
+    @apply bg-[#8C73A1] shadow-tactile-hover;
     transform: translateY(-2px);
   }
 
@@ -237,7 +241,7 @@
 
   /* --- Inputs --- */
   .input-fluid {
-    @apply w-full bg-white border-2 border-border py-4 px-6 text-charcoal rounded-[24px] font-body font-bold placeholder:text-charcoal/40 focus:outline-none focus:border-melon focus:shadow-[0_0_0_4px_#ff8ba726] transition-all duration-300 text-base;
+    @apply w-full bg-white border-2 border-border py-4 px-6 text-charcoal rounded-[24px] font-body font-bold placeholder:text-charcoal/25 focus:outline-none focus:border-melon focus:shadow-[0_0_0_4px_#a98fbe26] transition-all duration-300 text-base;
   }
 
   .input-clean {
@@ -246,7 +250,7 @@
 
   /* --- Cards --- */
   .bento-card {
-    @apply relative overflow-hidden bg-white border-2 border-border transition-all duration-500 rounded-[32px];
+    @apply relative overflow-hidden bg-white border-[1.5px] border-border transition-all duration-500 rounded-[32px];
   }
 
   .bento-card:hover {
@@ -390,4 +394,27 @@
 
 ::-webkit-scrollbar-thumb:hover {
   background: var(--color-melon);
+}
+
+/* Accessibility: Respect user motion preferences (WCAG 2.3.3) */
+@media (prefers-reduced-motion: reduce) {
+
+  .anim-float-y,
+  .anim-float-x,
+  .anim-blob {
+    animation: none;
+  }
+
+  .anim-fade-in-up {
+    animation: none;
+    opacity: 1;
+  }
+
+  *,
+  *::before,
+  *::after {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+  }
 }

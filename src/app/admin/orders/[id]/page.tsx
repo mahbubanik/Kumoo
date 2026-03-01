@@ -1,5 +1,6 @@
 import React from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { ArrowLeft, MapPin, Package, CreditCard, Clock } from "lucide-react";
 import { createClient } from "@/utils/supabase/server";
 import { notFound } from "next/navigation";
@@ -22,7 +23,7 @@ export default async function OrderDetailsPage({ params }: { params: { id: strin
     // 2. Fetch Order Items (with joined product data)
     const { data: orderItems } = await supabase
         .from("order_items")
-        .select("*, products(name, price)")
+        .select("*, products(name, price, images)")
         .eq("order_id", params.id);
 
     const date = new Date(order.created_at).toLocaleString('en-US', {
@@ -67,9 +68,18 @@ export default async function OrderDetailsPage({ params }: { params: { id: strin
                             {(orderItems || []).map((item) => (
                                 <div key={item.id} className="p-5 flex justify-between items-center group">
                                     <div className="flex items-center gap-4">
-                                        <div className="w-16 h-16 bg-os-bg border border-os-border rounded-lg flex items-center justify-center shrink-0">
-                                            {/* In a real app we'd fetch the product image, but we only have title/price in item */}
-                                            <Package className="w-6 h-6 text-os-text-muted/50" />
+                                        <div className="relative w-16 h-16 bg-os-bg border border-os-border rounded-lg flex items-center justify-center shrink-0 overflow-hidden">
+                                            {item.products?.images?.[0] ? (
+                                                <Image
+                                                    src={item.products.images[0]}
+                                                    alt={item.products?.name || 'Product'}
+                                                    fill
+                                                    sizes="64px"
+                                                    className="object-cover"
+                                                />
+                                            ) : (
+                                                <Package className="w-6 h-6 text-os-text-muted/50" />
+                                            )}
                                         </div>
                                         <div>
                                             <p className="font-bold text-os-primary group-hover:underline cursor-pointer">{item.products?.name || 'Unknown Product'}</p>

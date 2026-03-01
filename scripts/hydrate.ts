@@ -22,7 +22,7 @@ async function main() {
         sort_order: p.sort_order
     }));
 
-    const { data, error } = await supabase
+    const { error } = await supabase
         .from('products')
         .upsert(mappedProducts);
 

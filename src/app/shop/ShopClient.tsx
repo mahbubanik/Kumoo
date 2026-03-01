@@ -19,6 +19,7 @@ export function ShopClient({ products }: { products: Product[] }) {
         { id: "plushies", label: "Plushies", count: products.filter(p => p.category === "plushies").length },
         { id: "bags", label: "Bags", count: products.filter(p => p.category === "bags").length },
         { id: "accessories", label: "Accessories", count: products.filter(p => p.category === "accessories").length },
+        { id: "clothing", label: "Clothing", count: products.filter(p => p.category === "clothing").length },
     ];
 
     const filteredProducts = useMemo(() => {

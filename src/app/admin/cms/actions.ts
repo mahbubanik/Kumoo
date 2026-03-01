@@ -1,17 +1,20 @@
 "use server";
 
-import { createClient } from "@/utils/supabase/server";
+import { requireAdmin } from "@/lib/auth";
 import { revalidatePath } from "next/cache";
 
 export async function updateContentBlock(formData: FormData) {
-    const supabase = await createClient();
+    const { supabase } = await requireAdmin();
 
-    const key = formData.get("key") as string;
-    const title = formData.get("title") as string;
-    const content = formData.get("content") as string;
+    const key = (formData.get("key") as string || "").trim();
+    const title = (formData.get("title") as string || "").trim();
+    const content = (formData.get("content") as string || "").trim();
 
-    if (!key || !content) {
-        return { error: "Key and Content are required." };
+    if (!key) {
+        return { error: "Key is required." };
+    }
+    if (!content) {
+        return { error: "Content is required." };
     }
 
     const { error } = await supabase
@@ -29,7 +32,7 @@ export async function updateContentBlock(formData: FormData) {
     }
 
     revalidatePath("/admin/cms");
-    revalidatePath(`/${key}`); // Optimistically revalidate the frontend route (e.g. /about, /faq)
+    revalidatePath(`/${key}`);
 
     return { success: true };
 }

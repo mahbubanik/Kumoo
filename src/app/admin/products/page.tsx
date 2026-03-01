@@ -2,6 +2,7 @@ import React from 'react';
 import { createClient } from '@/utils/supabase/server';
 import Link from 'next/link';
 import { ProductTableControls } from './ProductTableControls';
+import { ActionsCell } from './ActionsCell';
 
 export default async function AdminProductsPage({
     searchParams
@@ -70,10 +71,7 @@ export default async function AdminProductsPage({
                                             <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-os-danger/10 text-os-danger ring-1 ring-inset ring-os-danger/20 whitespace-nowrap">Out of Stock</span>
                                         )}
                                     </td>
-                                    <td className="os-table-td text-right whitespace-nowrap">
-                                        <button className="text-os-text-muted hover:text-os-primary font-medium text-xs transition-colors mr-4">Edit</button>
-                                        <button className="text-os-danger/70 hover:text-os-danger transition-colors font-medium text-xs">Delete</button>
-                                    </td>
+                                    <ActionsCell productId={product.id} />
                                 </tr>
                             ))}
                             {(!products || products.length === 0) && (

@@ -37,6 +37,10 @@ export default async function ProductDetailsPage({ params }: { params: Promise<{
         category: productRow.category,
         collection: productRow.category, // fallback
         stock: productRow.in_stock ? 10 : 0, // mock stock
+        options: productRow.options || {
+            sizes: [],
+            colors: []
+        },
         images: productRow.images,
         featured: productRow.featured,
         sort_order: productRow.sort_order,
@@ -61,6 +65,10 @@ export default async function ProductDetailsPage({ params }: { params: Promise<{
         category: p.category,
         collection: p.category,
         stock: p.in_stock ? 10 : 0,
+        options: p.options || {
+            sizes: [],
+            colors: []
+        },
         images: p.images,
         featured: p.featured,
         sort_order: p.sort_order,

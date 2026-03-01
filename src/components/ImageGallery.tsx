@@ -9,6 +9,7 @@ interface ImageGalleryProps {
 }
 
 export function ImageGallery({ images, alt }: ImageGalleryProps) {
+    const [displayImages, setDisplayImages] = useState<string[]>(images && images.length > 0 ? images : ["/placeholder.png"]);
     const [currentIndex, setCurrentIndex] = useState(0);
     const [isZoomed, setIsZoomed] = useState(false);
     const [zoomPosition, setZoomPosition] = useState({ x: 50, y: 50 });
@@ -16,7 +17,7 @@ export function ImageGallery({ images, alt }: ImageGalleryProps) {
     const scrollRef = useRef<HTMLDivElement>(null);
     const autoPlayRef = useRef<NodeJS.Timeout | null>(null);
 
-    const totalImages = images.length;
+    const totalImages = displayImages.length;
     const hasMultiple = totalImages > 1;
 
     // Auto-slide every 4 seconds
@@ -70,112 +71,89 @@ export function ImageGallery({ images, alt }: ImageGalleryProps) {
 
     return (
         <>
-            {/* Main Gallery */}
+            {/* Main Gallery Area */}
             <div
-                className="relative group"
+                className="relative group w-full"
                 onMouseEnter={() => { stopAutoPlay(); setIsPaused(true); }}
                 onMouseLeave={() => setIsPaused(false)}
             >
-                {/* Image Strip */}
+                {/* Sideways Scrollable Frame - bg-vanilla, 28px radius, with Spotlight Padding */}
                 <div
                     ref={scrollRef}
-                    className="relative aspect-[4/5] bg-vanilla border-2 border-border rounded-[32px] overflow-hidden"
+                    className="relative aspect-[4/5] rounded-[28px] overflow-hidden shadow-tactile flex overflow-x-auto scroll-smooth snap-x snap-mandatory no-scrollbar"
                 >
-                    {images.map((src, i) => (
+                    {displayImages.map((src, i) => (
                         <div
                             key={i}
-                            className="absolute inset-0 transition-opacity duration-500 ease-in-out cursor-zoom-in"
-                            style={{ opacity: i === currentIndex ? 1 : 0 }}
-                            onClick={() => setIsZoomed(true)}
+                            className="relative min-w-full h-full snap-start flex items-center justify-center transition-transform duration-500"
                         >
-                            <Image
-                                src={src}
-                                alt={`${alt} — view ${i + 1}`}
-                                fill
-                                sizes="(max-width: 1024px) 100vw, 58vw"
-                                className="object-cover"
-                                priority={i === 0}
-                            />
+                            <div className="relative w-full h-full cursor-zoom-in" onClick={() => setIsZoomed(true)}>
+                                <Image
+                                    src={src}
+                                    alt={`${alt} — view ${i + 1}`}
+                                    fill
+                                    sizes="(max-width: 768px) 100vw, 500px"
+                                    className="object-cover transition-transform duration-700 ease-in-out"
+                                    priority={i === 0}
+                                    unoptimized
+                                    onError={() => {
+                                        const newImages = [...displayImages];
+                                        newImages[i] = "/placeholder.png";
+                                        setDisplayImages(newImages);
+                                    }}
+                                />
+                            </div>
                         </div>
                     ))}
-
-                    {/* Arrow controls (show on hover) */}
-                    {hasMultiple && (
-                        <>
-                            <button
-                                onClick={(e) => { e.stopPropagation(); goPrev(); }}
-                                className="absolute left-4 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white/80 backdrop-blur-sm border border-border flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-200 hover:bg-white z-10"
-                                aria-label="Previous image"
-                            >
-                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#332C39" strokeWidth="2.5">
-                                    <polyline points="15 18 9 12 15 6" />
-                                </svg>
-                            </button>
-                            <button
-                                onClick={(e) => { e.stopPropagation(); goNext(); }}
-                                className="absolute right-4 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white/80 backdrop-blur-sm border border-border flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-200 hover:bg-white z-10"
-                                aria-label="Next image"
-                            >
-                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#332C39" strokeWidth="2.5">
-                                    <polyline points="9 18 15 12 9 6" />
-                                </svg>
-                            </button>
-                        </>
-                    )}
-
-                    {/* Zoom hint */}
-                    <div className="absolute bottom-4 right-4 bg-white/70 backdrop-blur-sm rounded-full px-3 py-1.5 text-[11px] font-bold text-charcoal/50 uppercase tracking-widest opacity-0 group-hover:opacity-100 transition-opacity duration-200 z-10 flex items-center gap-1.5">
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                            <circle cx="11" cy="11" r="8" />
-                            <line x1="21" y1="21" x2="16.65" y2="16.65" />
-                            <line x1="11" y1="8" x2="11" y2="14" />
-                            <line x1="8" y1="11" x2="14" y2="11" />
-                        </svg>
-                        Zoom
-                    </div>
                 </div>
 
-                {/* Dot Indicators */}
+                {/* Dot Indicators - Consolidated to bottom center */}
                 {hasMultiple && (
-                    <div className="flex justify-center gap-2 mt-4">
-                        {images.map((_, i) => (
+                    <div className="absolute bottom-6 left-0 right-0 flex justify-center gap-2 z-10 pointer-events-none">
+                        {displayImages.map((_, i) => (
                             <button
                                 key={i}
-                                onClick={() => goTo(i)}
-                                className={`w-2.5 h-2.5 rounded-full transition-all duration-300 ${i === currentIndex
-                                    ? "bg-melon scale-110"
-                                    : "bg-border hover:bg-charcoal/30"
+                                onClick={(e) => { e.stopPropagation(); goTo(i); }}
+                                className={`w-2 h-2 rounded-full transition-all duration-300 pointer-events-auto ${i === currentIndex
+                                    ? "bg-melon scale-125 shadow-sm"
+                                    : "bg-white/40 border border-charcoal/10 hover:bg-white/60"
                                     }`}
                                 aria-label={`Go to image ${i + 1}`}
                             />
                         ))}
                     </div>
                 )}
-
-                {/* Thumbnail strip */}
-                {hasMultiple && (
-                    <div className="flex gap-3 mt-4">
-                        {images.map((src, i) => (
-                            <button
-                                key={i}
-                                onClick={() => goTo(i)}
-                                className={`relative w-16 h-16 rounded-xl overflow-hidden border-2 transition-all duration-200 ${i === currentIndex
-                                    ? "border-melon shadow-sm"
-                                    : "border-border/50 opacity-60 hover:opacity-100"
-                                    }`}
-                            >
-                                <Image
-                                    src={src}
-                                    alt={`${alt} thumbnail ${i + 1}`}
-                                    fill
-                                    sizes="64px"
-                                    className="object-cover"
-                                />
-                            </button>
-                        ))}
-                    </div>
-                )}
             </div>
+
+            {/* Thumbnail strip - Sideways scrollable as well */}
+            {hasMultiple && (
+                <div className="flex gap-4 mt-6 overflow-x-auto no-scrollbar pb-2">
+                    {displayImages.map((src, i) => (
+                        <button
+                            key={i}
+                            onClick={() => goTo(i)}
+                            className={`relative w-20 h-20 flex-shrink-0 rounded-[12px] overflow-hidden border-2 transition-all duration-300 ${i === currentIndex
+                                ? "border-melon shadow-sm"
+                                : "border-border/50 opacity-60 hover:opacity-100"
+                                }`}
+                        >
+                            <Image
+                                src={src}
+                                alt={`${alt} thumbnail ${i + 1}`}
+                                fill
+                                sizes="80px"
+                                className="object-cover"
+                                unoptimized
+                                onError={() => {
+                                    const newImages = [...displayImages];
+                                    newImages[i] = "/placeholder.png";
+                                    setDisplayImages(newImages);
+                                }}
+                            />
+                        </button>
+                    ))}
+                </div>
+            )}
 
             {/* Zoom Modal */}
             {isZoomed && (
@@ -202,10 +180,10 @@ export function ImageGallery({ images, alt }: ImageGalleryProps) {
                         onClick={(e) => e.stopPropagation()}
                     >
                         <div
-                            className="w-full h-full overflow-hidden rounded-2xl"
+                            className="w-full h-full overflow-hidden rounded-[28px] border-[1.5px] border-white/20"
                         >
                             <Image
-                                src={images[currentIndex]}
+                                src={displayImages[currentIndex]}
                                 alt="Zoomed view"
                                 fill
                                 unoptimized
@@ -245,7 +223,7 @@ export function ImageGallery({ images, alt }: ImageGalleryProps) {
                     {/* Modal dots */}
                     {hasMultiple && (
                         <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex gap-3 z-[100]">
-                            {images.map((_, i) => (
+                            {displayImages.map((_, i) => (
                                 <button
                                     key={i}
                                     onClick={(e) => { e.stopPropagation(); goTo(i); }}

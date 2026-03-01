@@ -1,5 +1,10 @@
 import React from "react";
 
+export const metadata = {
+    title: "FAQ | Kumoo Studio",
+    description: "Frequently asked questions about Kumoo's handcrafted crochet products, materials, shipping, and custom orders.",
+};
+
 export default function FAQPage() {
     return (
         <div className="relative">
@@ -48,9 +53,9 @@ export default function FAQPage() {
                             a: "Spot cleaning with mild soap and cold water is best. If a full wash is necessary, place the item in a mesh laundry bag and wash on a delicate, cold cycle. Air dry completely — never tumble dry."
                         }
                     ].map((faq, i) => (
-                        <div key={i} className="bg-white rounded-[28px] p-8 border-[1.5px] border-border shadow-sm">
-                            <h3 className="font-display font-bold text-lg text-charcoal mb-3">{faq.q}</h3>
-                            <p className="font-body text-charcoal/70 text-base leading-relaxed font-medium mb-0">
+                        <div key={i} className="bg-white rounded-[28px] p-8 sm:p-10 border-[1.5px] border-border shadow-sm transition-all hover:shadow-md">
+                            <h3 className="font-display font-bold text-xl text-charcoal mb-4 leading-tight">{faq.q}</h3>
+                            <p className="font-body text-charcoal/70 text-base leading-relaxed font-medium">
                                 {faq.a}
                             </p>
                         </div>
@@ -63,7 +68,7 @@ export default function FAQPage() {
                         Still have questions? We&apos;d love to help.
                     </p>
                     <a
-                        href="https://wa.me/8801XXXXXXXXX"
+                        href={`https://wa.me/${process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || ''}`}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="btn-primary"

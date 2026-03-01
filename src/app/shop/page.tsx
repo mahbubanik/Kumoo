@@ -22,6 +22,7 @@ export default async function ShopPage() {
         category: p.category,
         collection: p.category, // fallback
         stock: p.in_stock ? 10 : 0, // mock stock
+        options: p.options || { sizes: [], colors: [] },
         images: p.images,
         featured: p.featured,
         sort_order: p.sort_order,

@@ -49,7 +49,7 @@ export function RevenueChart({ data }: { data: { date: string, amount: number }[
                             boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)'
                         }}
                         itemStyle={{ color: 'var(--os-primary)', fontWeight: 'bold' }}
-                        formatter={(value: any) => [`৳${value}`, 'Revenue']}
+                        formatter={(value: number | string | undefined) => [`৳${value}`, 'Revenue']}
                     />
                     <Area
                         type="monotone"

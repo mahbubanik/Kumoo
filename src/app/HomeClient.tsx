@@ -5,6 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { ProductCard } from "@/components/ProductCard";
 import { PeekSheet } from "@/components/PeekSheet";
+import { ArtboardGallery } from "@/components/ArtboardGallery";
 import { Product } from "@/lib/types";
 
 export function HomeClient({ featuredProducts }: { featuredProducts: Product[] }) {
@@ -29,7 +30,7 @@ export function HomeClient({ featuredProducts }: { featuredProducts: Product[] }
         const el = carouselRef.current;
         if (!el) return;
 
-        const pixelsPerSecond = 30; // 30px per sec
+        const pixelsPerSecond = 45; // Slightly faster for visual cue
         let rafId: number;
         let lastTime: number | null = null;
         let accumulatedScroll = 0;
@@ -40,23 +41,32 @@ export function HomeClient({ featuredProducts }: { featuredProducts: Product[] }
             lastTime = timestamp;
 
             if (!carouselHovered && el) {
-                // Calculate how much we should move this frame
+                // Disable snap during auto-scroll to allow sub-pixel movement
+                if (el.style.scrollSnapType !== 'none') {
+                    el.style.scrollSnapType = 'none';
+                }
+
                 const moveAmount = (pixelsPerSecond * deltaTime) / 1000;
                 accumulatedScroll += moveAmount;
 
-                // Only apply scroll when we have at least 1px to move (smoother on sub-pixel tracking)
                 if (accumulatedScroll >= 1) {
                     const pixelsToMove = Math.floor(accumulatedScroll);
                     accumulatedScroll -= pixelsToMove;
 
-                    const maxScroll = el.scrollWidth - el.clientWidth;
-                    if (el.scrollLeft >= maxScroll - 1) {
-                        el.scrollLeft = 0;
+                    // With duplicated content, we reset to half the scrollWidth
+                    // The gap makes it slightly tricky, but scrollWidth / 2 is exact because we duplicate the exact elements and gap.
+                    const halfScroll = el.scrollWidth / 2;
+                    if (el.scrollLeft >= halfScroll) {
+                        el.scrollLeft -= halfScroll; // Jump seamlessly back
                     } else {
                         el.scrollLeft += pixelsToMove;
                     }
                 }
+            } else if (el && el.style.scrollSnapType === 'none') {
+                // Re-enable snap when hovered/interacting
+                el.style.scrollSnapType = 'x mandatory';
             }
+
             rafId = requestAnimationFrame(step);
         };
 
@@ -68,8 +78,9 @@ export function HomeClient({ featuredProducts }: { featuredProducts: Product[] }
         return () => {
             clearTimeout(timer);
             cancelAnimationFrame(rafId);
+            if (el) el.style.scrollSnapType = 'x mandatory';
         };
-    }, [carouselHovered]);
+    }, [carouselHovered, featuredProducts.length]);
 
     return (
         <>
@@ -134,7 +145,7 @@ export function HomeClient({ featuredProducts }: { featuredProducts: Product[] }
                                     Our most loved, cuddly, and painstakingly engineered crochet items. Pick your favorite squish!
                                 </p>
                             </div>
-                            <Link href="/shop" className="font-display font-bold text-xs uppercase tracking-widest text-melon hover:text-[#ff7396] transition-colors shrink-0 bg-white px-5 py-2.5 rounded-full border-[1.5px] border-melon shadow-sm hover:shadow-tactile">
+                            <Link href="/shop" className="font-display font-bold text-xs uppercase tracking-widest text-melon hover:text-[#8C73A1] transition-colors shrink-0 bg-white px-5 py-2.5 rounded-full border-[1.5px] border-melon shadow-sm hover:shadow-tactile">
                                 View Entire Catalog
                             </Link>
                         </div>
@@ -154,9 +165,10 @@ export function HomeClient({ featuredProducts }: { featuredProducts: Product[] }
                             onTouchStart={() => setCarouselHovered(true)}
                             onTouchEnd={() => setCarouselHovered(false)}
                         >
+                            {/* Original Set */}
                             {featuredProducts.map((product, i) => (
                                 <div
-                                    key={product.id}
+                                    key={`orig-${product.id}`}
                                     className="min-w-[240px] sm:min-w-[260px] lg:min-w-[280px] flex-shrink-0"
                                     style={{ scrollSnapAlign: 'start' }}
                                 >
@@ -164,6 +176,21 @@ export function HomeClient({ featuredProducts }: { featuredProducts: Product[] }
                                         product={product}
                                         onQuickView={handleQuickView}
                                         index={i}
+                                    />
+                                </div>
+                            ))}
+                            {/* Cloned Set for Seamless Loop */}
+                            {featuredProducts.length > 0 && featuredProducts.map((product, i) => (
+                                <div
+                                    key={`clone-${product.id}`}
+                                    className="min-w-[240px] sm:min-w-[260px] lg:min-w-[280px] flex-shrink-0"
+                                    style={{ scrollSnapAlign: 'start' }}
+                                    aria-hidden="true"
+                                >
+                                    <ProductCard
+                                        product={product}
+                                        onQuickView={handleQuickView}
+                                        index={i + featuredProducts.length}
                                     />
                                 </div>
                             ))}
@@ -186,7 +213,7 @@ export function HomeClient({ featuredProducts }: { featuredProducts: Product[] }
                             </h2>
                         </div>
 
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8">
                             {[
                                 {
                                     title: "Plushies",
@@ -212,11 +239,19 @@ export function HomeClient({ featuredProducts }: { featuredProducts: Product[] }
                                     bg: "bg-[#FDF1CC]/30",
                                     border: "border-[#FDF1CC]/50",
                                 },
+                                {
+                                    title: "Clothing",
+                                    desc: "Wearable art.",
+                                    image: "/products/floral-mesh-top.jpeg",
+                                    href: "/shop?cat=clothing",
+                                    bg: "bg-[#A98FBE]/20",
+                                    border: "border-[#A98FBE]/40",
+                                },
                             ].map((cat) => (
                                 <Link
                                     href={cat.href}
                                     key={cat.title}
-                                    className={`group relative overflow-hidden flex flex-col items-center justify-between ${cat.bg} border-[1.5px] ${cat.border} rounded-[28px] p-6 sm:p-8 hover:shadow-lg hover:-translate-y-1 transition-all duration-500`}
+                                    className={`group relative overflow-hidden flex flex-col items-center justify-between ${cat.bg} border-[1.5px] ${cat.border} rounded-[28px] p-6 sm:p-8 hover:shadow-lg hover:-translate-y-1 transition-all duration-300 ease-out`}
                                 >
                                     {/* Category Text */}
                                     <div className="text-center z-10 w-full mb-6">
@@ -261,7 +296,7 @@ export function HomeClient({ featuredProducts }: { featuredProducts: Product[] }
                             {/* Custom Orders - Pastel Card */}
                             <div className="flex flex-col justify-center border-2 border-charcoal bg-rose rounded-[36px] p-8 sm:p-12 shadow-[8px_8px_0px_rgba(44,44,44,1)] transform hover:-translate-y-2 transition-transform">
                                 <span className="inline-block px-4 py-1 bg-white text-charcoal font-display font-bold text-[13px] uppercase tracking-widest rounded-full shadow-sm mb-6 w-max border-2 border-charcoal">
-                                    ✨ Commission Work
+                                    Commission Work
                                 </span>
                                 <h2 className="font-display font-bold text-2xl sm:text-3xl text-charcoal leading-tight mb-5">
                                     Got a wild idea? <br />Let&apos;s make it real.
@@ -272,7 +307,7 @@ export function HomeClient({ featuredProducts }: { featuredProducts: Product[] }
 
                                 <div className="mt-auto">
                                     <a
-                                        href="https://wa.me/8801XXXXXXXXX?text=Inquiry:%20Custom%20Commission"
+                                        href={`https://wa.me/${process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || ''}?text=Inquiry:%20Custom%20Commission`}
                                         target="_blank"
                                         rel="noopener noreferrer"
                                         className="bg-charcoal text-white font-display font-bold text-base px-7 py-4 rounded-full flex items-center justify-center gap-3 hover:bg-[#4a4152] hover:shadow-tactile hover:-translate-y-1 transition-all"
@@ -333,6 +368,9 @@ export function HomeClient({ featuredProducts }: { featuredProducts: Product[] }
 
                     </div>
                 </section>
+
+                {/* Maker's Diary SEO + Visual Artboard Additive Extension */}
+                <ArtboardGallery products={featuredProducts} />
 
                 {/* Peek Sheet Integration */}
                 <PeekSheet

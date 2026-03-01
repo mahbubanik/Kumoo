@@ -22,6 +22,10 @@ export default async function HomePage() {
     category: p.category,
     collection: p.category,
     stock: p.in_stock ? 10 : 0,
+    options: p.options || {
+      sizes: [],
+      colors: []
+    },
     images: p.images,
     featured: p.featured,
     sort_order: p.sort_order,

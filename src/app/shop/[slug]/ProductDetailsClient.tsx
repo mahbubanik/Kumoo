@@ -6,12 +6,28 @@ import { useRouter } from "next/navigation";
 import { useCartStore } from "@/store/useCartStore";
 import { ImageGallery } from "@/components/ImageGallery";
 import { ProductCard } from "@/components/ProductCard";
+import { DiarySnippet } from "@/components/DiarySnippet";
 import { Product } from "@/lib/types";
+import { DELIVERY_ZONES } from "@/lib/config";
 
 export function ProductDetailsClient({ product, relatedProducts }: { product: Product, relatedProducts: Product[] }) {
     const router = useRouter();
     const addItem = useCartStore((state) => state.addItem);
     const [isAdded, setIsAdded] = useState(false);
+
+    // Variant State
+    const hasSizes = product.options?.sizes && product.options.sizes.length > 0;
+    const hasColors = product.options?.colors && product.options.colors.length > 0;
+
+    const [selectedSize, setSelectedSize] = useState<string | undefined>(hasSizes ? product.options!.sizes![0] : undefined);
+    const [selectedColor, setSelectedColor] = useState<{ name: string, hex: string } | undefined>(hasColors ? product.options!.colors![0] : undefined);
+
+    // Quantity State
+    const [quantity, setQuantity] = useState(1);
+
+    const handleQuantityChange = (delta: number) => {
+        setQuantity(prev => Math.max(1, prev + delta));
+    };
 
     const handleAddToCart = () => {
         addItem({
@@ -19,7 +35,10 @@ export function ProductDetailsClient({ product, relatedProducts }: { product: Pr
             name: product.name_en,
             price: product.price,
             image: product.images[0],
-            quantity: 1,
+            quantity: quantity,
+            size: selectedSize,
+            color: selectedColor?.name,
+            colorHex: selectedColor?.hex
         });
 
         setIsAdded(true);
@@ -30,27 +49,21 @@ export function ProductDetailsClient({ product, relatedProducts }: { product: Pr
     };
 
     return (
-        <div className="min-h-screen pt-28 pb-32">
-            <div className="layout-container">
-                {/* Breadcrumb */}
-                <nav className="mb-10 pt-2">
-                    <Link href="/shop" className="text-[11px] font-bold uppercase tracking-[0.18em] text-charcoal/35 hover:text-charcoal transition-colors flex items-center gap-2">
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+        <div className="min-h-screen pt-28 pb-32 bg-white">
+            <div className="layout-container max-w-5xl px-6">
+                <nav className="mb-4 pt-0">
+                    <Link href="/shop" className="text-[11px] font-bold uppercase tracking-[0.2em] text-charcoal/30 hover:text-charcoal transition-colors flex items-center gap-2">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3">
                             <polyline points="15 18 9 12 15 6"></polyline>
                         </svg>
-                        Back to Collection
+                        Collection
                     </Link>
                 </nav>
 
-                <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-20 items-start">
-                    {/* Left: Product Image */}
-                    <div className="lg:col-span-7">
-                        <div className="sticky top-24">
-                            {product.featured && (
-                                <div className="absolute top-6 left-6 z-20 badge-premium bg-[#FDF1CC]/80 backdrop-blur-sm border border-[#FDF1CC] text-charcoal">
-                                    Featured
-                                </div>
-                            )}
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-24 items-start">
+                    {/* Left: Product Image (Centered Spotlight) */}
+                    <div className="w-full max-w-[420px] mx-auto">
+                        <div className="relative">
                             <ImageGallery
                                 images={product.images}
                                 alt={product.name_en}
@@ -59,72 +72,107 @@ export function ProductDetailsClient({ product, relatedProducts }: { product: Pr
                     </div>
 
                     {/* Right: Info */}
-                    <div className="lg:col-span-5 flex flex-col pt-2 lg:pt-8">
-                        {/* Badges */}
-                        <div className="mb-4 flex gap-2">
-                            {product.stock > 0 && product.stock <= 5 && (
-                                <span className="badge-premium bg-rose/20 text-charcoal border border-rose/30">
-                                    Only {product.stock} left
-                                </span>
-                            )}
-                            {product.stock === 0 && (
-                                <span className="badge-premium bg-charcoal/5 text-charcoal/40">
-                                    Sold Out
-                                </span>
-                            )}
+                    <div className="flex flex-col pt-0 max-w-[500px]">
+                        {/* Title & Price - Tighter element Spacing */}
+                        <div className="mb-4">
+                            <h1 className="font-display font-bold text-[32px] sm:text-[36px] text-charcoal leading-[1.1] mb-1 relative inline-block">
+                                {product.name_en}
+                                <span className="absolute -bottom-1 left-0 w-full h-3 bg-melon/15 rounded-full -z-10"></span>
+                            </h1>
+                            <p className="text-[26px] font-display font-bold text-melon">
+                                ৳{product.price}
+                            </p>
                         </div>
 
-                        {/* Title */}
-                        <h1 className="font-display font-bold text-3xl lg:text-4xl text-charcoal leading-tight mb-3">
-                            {product.name_en}
-                        </h1>
+                        {/* Description - 16px Section Spacing (Consolidated) */}
+                        <div className="mb-4">
+                            <p className="text-[16px] text-[#333333]/80 leading-[1.5] max-w-prose">
+                                {product.description_en || "A meticulously handcrafted piece designed with minimal aesthetic intent. Knitted with sustainable yarn sourced directly for quality."}
+                            </p>
+                        </div>
 
-                        {/* Price */}
-                        <p className="text-xl font-bold text-charcoal/50 mb-8 pb-8 border-b border-border">
-                            {product.price} BDT
-                        </p>
+                        {/* Options - Consistently spaced */}
+                        {(hasColors || hasSizes) && (
+                            <div className="space-y-4 mb-6">
+                                {/* Color Swatches */}
+                                {hasColors && (
+                                    <div>
+                                        <div className="flex items-center gap-2 mb-2">
+                                            <span className="text-[11px] font-bold uppercase tracking-widest text-charcoal/40">Color</span>
+                                            <span className="text-[13px] font-medium text-charcoal/80">{selectedColor?.name}</span>
+                                        </div>
+                                        <div className="flex gap-2">
+                                            {product.options!.colors!.map((c, i) => (
+                                                <button
+                                                    key={i}
+                                                    onClick={() => setSelectedColor(c)}
+                                                    className={`w-8 h-8 rounded-full border-2 transition-all duration-300 ${selectedColor?.name === c.name ? 'border-charcoal ring-2 ring-charcoal/20 scale-110 shadow-sm z-10' : 'border-white ring-1 ring-border shadow-sm hover:scale-110'}`}
+                                                    style={{ backgroundColor: c.hex }}
+                                                    aria-label={`Select ${c.name} color`}
+                                                />
+                                            ))}
+                                        </div>
+                                    </div>
+                                )}
 
-                        {/* Description */}
-                        <p className="text-charcoal/50 leading-relaxed mb-10 max-w-sm font-medium text-[15px]">
-                            {product.description_en || "A meticulously handcrafted piece designed with minimal aesthetic intent. Knitted with sustainable yarn sourced directly for quality."}
-                        </p>
+                                {/* Size Buttons */}
+                                {hasSizes && (
+                                    <div>
+                                        <span className="text-[11px] font-bold uppercase tracking-widest text-charcoal/40 mb-2 block">Pick Size</span>
+                                        <div className="flex gap-3">
+                                            {product.options!.sizes!.map((s, i) => (
+                                                <button
+                                                    key={i}
+                                                    onClick={() => setSelectedSize(s)}
+                                                    className={`px-6 py-3 rounded-full border-[1.5px] text-[13px] font-display font-bold transition-all duration-300 ${selectedSize === s ? 'border-melon text-melon bg-melon/5 shadow-sm' : 'border-border text-charcoal/60 hover:border-melon hover:text-melon'}`}
+                                                >
+                                                    {s}
+                                                </button>
+                                            ))}
+                                        </div>
+                                    </div>
+                                )}
+                            </div>
+                        )}
 
-                        {/* Add to Cart */}
-                        <div className="mb-10 py-8 border-y border-border">
+                        {/* Add to Cart Actions - 24px spacing */}
+                        <div className="flex flex-col sm:flex-row items-center gap-6 mb-8 pt-6 border-t border-border/40">
+                            {/* Quantity Selector - Branded Rounded */}
+                            <div className="flex items-center bg-vanilla rounded-full border-[1.5px] border-border overflow-hidden">
+                                <button onClick={() => handleQuantityChange(-1)} className="w-12 h-12 flex items-center justify-center text-xl text-charcoal/40 hover:text-melon transition-colors md:hover:bg-charcoal/5">-</button>
+                                <span className="w-8 text-center font-display font-bold text-charcoal">{quantity}</span>
+                                <button onClick={() => handleQuantityChange(1)} className="w-12 h-12 flex items-center justify-center text-xl text-charcoal/40 hover:text-melon transition-colors md:hover:bg-charcoal/5">+</button>
+                            </div>
+
+                            {/* Add to Cart - Kumoo Primary */}
                             <button
                                 onClick={handleAddToCart}
                                 disabled={product.stock === 0}
-                                className={`w-full bg-charcoal text-white font-display font-bold text-[15px] py-4.5 rounded-full transition-all duration-300 hover:bg-[#4a4152] hover:-translate-y-0.5 ${isAdded ? '!bg-mint !text-charcoal' : ''
-                                    } ${product.stock === 0 ? 'opacity-40 cursor-not-allowed' : ''}`}
-                                style={{ boxShadow: '0 4px 12px rgba(0,0,0,0.06)' }}
+                                className={`btn-primary flex-1 w-full sm:w-auto h-12 py-0 text-[14px] uppercase tracking-widest ${isAdded ? '!bg-mint !text-charcoal' : ''
+                                    }`}
                             >
-                                {product.stock === 0 ? "Currently Unavailable" : isAdded ? "Added ✓" : "Add to Cart"}
+                                {product.stock === 0 ? "Sold Out" : isAdded ? "Added ✓" : "Add to Cart"}
                             </button>
                         </div>
 
-                        {/* Delivery Details */}
-                        <div className="bg-white rounded-[20px] p-7 border border-border shadow-sm">
-                            <h3 className="text-[11px] font-bold tracking-[0.18em] uppercase text-charcoal/40 mb-5 flex items-center gap-2.5">
-                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-                                    <rect x="1" y="3" width="15" height="13"></rect>
-                                    <polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon>
-                                    <circle cx="5.5" cy="18.5" r="2.5"></circle>
-                                    <circle cx="18.5" cy="18.5" r="2.5"></circle>
-                                </svg>
-                                Delivery
-                            </h3>
-                            <div className="space-y-3 text-sm">
-                                <div className="flex justify-between items-center pb-3 border-b border-border/60">
-                                    <span className="text-charcoal/45">Inside Dhaka</span>
-                                    <span className="font-bold text-charcoal">70 BDT</span>
-                                </div>
-                                <div className="flex justify-between items-center">
-                                    <span className="text-charcoal/45">Outside Dhaka</span>
-                                    <span className="font-bold text-charcoal">120 – 150 BDT</span>
-                                </div>
+                        {/* Delivery Row - Ghost Row */}
+                        <div className="flex items-center gap-8 text-[12px] text-zinc-400 tracking-wide">
+                            <div className="flex items-center gap-2">
+                                <span className="font-bold">DHAKA</span>
+                                <span>{DELIVERY_ZONES.inside.fee} BDT</span>
+                            </div>
+                            <div className="w-1 h-1 rounded-full bg-zinc-200"></div>
+                            <div className="flex items-center gap-2">
+                                <span className="font-bold">OUTSIDE</span>
+                                <span>{DELIVERY_ZONES.outside.fee} BDT</span>
                             </div>
                         </div>
                     </div>
+                </div>
+
+                {/* The Maker's Diary SEO Additive Extension */}
+                <div className="mt-20 sm:mt-24">
+                    <DiarySnippet product={product} />
                 </div>
 
                 {/* ═══════════════════════════════════════════════════

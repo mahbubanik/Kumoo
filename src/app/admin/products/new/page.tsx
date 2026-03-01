@@ -106,7 +106,9 @@ export default function AddProductPage() {
                                 <select name="category" className="os-input" defaultValue="plushies">
                                     <option value="plushies">Plushies</option>
                                     <option value="accessories">Accessories</option>
+                                    <option value="bags">Bags</option>
                                     <option value="apparel">Apparel</option>
+                                    <option value="clothing">Clothing</option>
                                 </select>
                             </div>
                             <div>

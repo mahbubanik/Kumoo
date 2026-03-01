@@ -1,17 +1,20 @@
 "use server";
 
-import { createClient } from "@/utils/supabase/server";
+import { requireAdmin } from "@/lib/auth";
 import { revalidatePath } from "next/cache";
 
 export async function createPromoCode(formData: FormData) {
-    const supabase = await createClient();
+    const { supabase } = await requireAdmin();
 
-    const code = formData.get("code") as string;
+    const code = (formData.get("code") as string || "").trim();
     const discountStr = formData.get("discount_percentage") as string;
     const discount_percentage = parseInt(discountStr, 10);
 
-    if (!code || isNaN(discount_percentage) || discount_percentage <= 0 || discount_percentage > 100) {
-        return { error: "Invalid promo code or percentage." };
+    if (!code || code.length < 2) {
+        return { error: "Promo code must be at least 2 characters." };
+    }
+    if (isNaN(discount_percentage) || discount_percentage <= 0 || discount_percentage > 100) {
+        return { error: "Discount must be between 1% and 100%." };
     }
 
     const { error } = await supabase
@@ -34,7 +37,11 @@ export async function createPromoCode(formData: FormData) {
 }
 
 export async function deletePromoCode(id: string) {
-    const supabase = await createClient();
+    const { supabase } = await requireAdmin();
+
+    if (!id || typeof id !== 'string') {
+        return { error: "Invalid promo code ID." };
+    }
 
     const { error } = await supabase
         .from("promo_codes")

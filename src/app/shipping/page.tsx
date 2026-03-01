@@ -1,4 +1,10 @@
 import React from "react";
+import { DELIVERY_ZONES } from "@/lib/config";
+
+export const metadata = {
+    title: "Shipping & Delivery | Kumoo Studio",
+    description: "Delivery zones, shipping costs, and estimated delivery times for Kumoo handcrafted products across Bangladesh.",
+};
 
 export default function ShippingPage() {
     return (
@@ -36,11 +42,11 @@ export default function ShippingPage() {
                         <ul className="space-y-4 font-body text-charcoal/70 font-medium text-base">
                             <li className="flex justify-between items-center border-b border-charcoal/10 pb-3">
                                 <span>Delivery Time</span>
-                                <span className="text-charcoal font-bold">2–4 Days</span>
+                                <span className="text-charcoal font-bold">{DELIVERY_ZONES.inside.eta}</span>
                             </li>
                             <li className="flex justify-between items-center border-b border-charcoal/10 pb-3">
                                 <span>Delivery Charge</span>
-                                <span className="text-charcoal font-bold">70 BDT</span>
+                                <span className="text-charcoal font-bold">{DELIVERY_ZONES.inside.fee} BDT</span>
                             </li>
                             <li className="flex justify-between items-center">
                                 <span>Payment Method</span>
@@ -57,11 +63,11 @@ export default function ShippingPage() {
                         <ul className="space-y-4 font-body text-charcoal/70 font-medium text-base">
                             <li className="flex justify-between items-center border-b border-charcoal/10 pb-3">
                                 <span>Delivery Time</span>
-                                <span className="text-charcoal font-bold">3–7 Days</span>
+                                <span className="text-charcoal font-bold">{DELIVERY_ZONES.outside.eta}</span>
                             </li>
                             <li className="flex justify-between items-center border-b border-charcoal/10 pb-3">
                                 <span>Delivery Charge</span>
-                                <span className="text-charcoal font-bold">120 BDT</span>
+                                <span className="text-charcoal font-bold">{DELIVERY_ZONES.outside.fee} BDT</span>
                             </li>
                             <li className="flex justify-between items-center">
                                 <span>Payment Method</span>

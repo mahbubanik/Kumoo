@@ -1,21 +1,20 @@
 "use server";
 
-import { createClient } from "@/utils/supabase/server";
+import { requireAdmin } from "@/lib/auth";
 import { revalidatePath } from "next/cache";
 
 export async function updateStoreSettings(formData: FormData) {
-    const supabase = await createClient();
+    const { supabase } = await requireAdmin();
 
     const settingsData = {
-        store_name: formData.get("store_name"),
-        meta_description: formData.get("meta_description"),
-        primary_color: formData.get("primary_color"),
+        store_name: (formData.get("store_name") as string || "").trim(),
+        meta_description: (formData.get("meta_description") as string || "").trim(),
+        primary_color: (formData.get("primary_color") as string || "").trim(),
         promo_banner_active: formData.get("promo_banner_active") === "on",
-        promo_banner_text: formData.get("promo_banner_text"),
-        shipping_fee: formData.get("shipping_fee"),
+        promo_banner_text: (formData.get("promo_banner_text") as string || "").trim(),
+        shipping_fee: parseFloat(formData.get("shipping_fee") as string || "0") || 0,
     };
 
-    // Upsert the main settings object into store_settings
     const { error } = await supabase
         .from("store_settings")
         .upsert({
@@ -30,7 +29,7 @@ export async function updateStoreSettings(formData: FormData) {
 
     revalidatePath("/admin/settings");
     revalidatePath("/");
-    revalidatePath("/shop"); // Invalidate storefront paths to reflect changes
+    revalidatePath("/shop");
 
     return { success: true };
 }

@@ -7,9 +7,13 @@ export interface Product {
     description_bn?: string;
     price: number;
     compare_at_price?: number;
-    category: "plushies" | "bags" | "accessories";
+    category: "plushies" | "bags" | "accessories" | "clothing";
     collection?: string;
     stock: number;
+    options?: {
+        sizes?: string[];
+        colors?: { name: string; hex: string }[];
+    };
     images: string[];
     featured: boolean;
     sort_order: number;
@@ -20,6 +24,9 @@ export interface Product {
 export interface CartItem {
     product: Product;
     quantity: number;
+    size?: string;
+    color?: string;
+    colorHex?: string;
 }
 
 export interface Order {
@@ -43,6 +50,8 @@ export interface OrderItem {
     price: number;
     qty: number;
     image: string;
+    size?: string;
+    color?: string;
 }
 
 export interface Collection {

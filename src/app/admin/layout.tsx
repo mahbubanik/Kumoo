@@ -2,10 +2,14 @@ import React from "react";
 import Link from "next/link";
 import { Package, ShoppingCart, Settings, LogOut, Home, UserCircle, FileText, Tag } from "lucide-react";
 import { Toaster } from "sonner";
+import { createClient } from "@/utils/supabase/server";
+import { redirect } from "next/navigation";
 
-export default function AdminLayout({ children }: { children: React.ReactNode }) {
-    // Note: In production, add server-side auth check here (e.g. Supabase auth)
-    // if (!user) redirect('/login');
+export default async function AdminLayout({ children }: { children: React.ReactNode }) {
+    // Server-side auth guard
+    const supabase = await createClient();
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) redirect('/login');
 
     return (
         <div className="min-h-screen bg-os-bg flex flex-col md:flex-row font-body text-os-text selection:bg-os-primary selection:text-os-primary-fg">
@@ -60,10 +64,17 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                 </nav>
 
                 <div className="p-3 border-t border-os-border">
-                    <Link href="/" className="flex items-center gap-3 px-3 py-2 rounded-md hover:bg-os-danger/10 text-os-danger transition-colors font-medium text-sm">
-                        <LogOut className="w-4 h-4" />
-                        Exit Store
-                    </Link>
+                    <form action={async () => {
+                        'use server';
+                        const supabase = await createClient();
+                        await supabase.auth.signOut();
+                        redirect('/login');
+                    }}>
+                        <button type="submit" className="flex items-center gap-3 px-3 py-2 rounded-md hover:bg-os-danger/10 text-os-danger transition-colors font-medium text-sm w-full">
+                            <LogOut className="w-4 h-4" />
+                            Sign Out
+                        </button>
+                    </form>
                 </div>
             </aside>
 

@@ -26,7 +26,7 @@ export async function PromoBanner() {
                 color: "var(--color-bg)" // Presuming a white/light text works on dynamic primary backgrounds
             }}
         >
-            ✨ {settings.promo_banner_text} ✨
+            {settings.promo_banner_text}
         </div>
     );
 }

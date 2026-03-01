@@ -1,6 +1,11 @@
 import React from "react";
 import Link from "next/link";
 
+export const metadata = {
+    title: "About | Kumoo Studio",
+    description: "The studio behind the softness — handcrafted crochet plushies, bags, and accessories made in Dhaka.",
+};
+
 export default function AboutPage() {
     return (
         <div className="relative">
@@ -80,7 +85,7 @@ export default function AboutPage() {
                                 Browse Collection
                             </Link>
                             <a
-                                href="https://wa.me/8801XXXXXXXXX?text=Hi!%20I%27d%20love%20to%20know%20more%20about%20Kumoo."
+                                href={`https://wa.me/${process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || ''}?text=Hi!%20I%27d%20love%20to%20know%20more%20about%20Kumoo.`}
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 className="btn-secondary text-center px-8"

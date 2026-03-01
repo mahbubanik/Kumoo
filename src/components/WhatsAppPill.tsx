@@ -2,15 +2,19 @@
 
 import React from "react";
 
+const WHATSAPP_NUMBER = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "";
+
 /**
  * Floating WhatsApp pill button — bottom-right corner.
  * Links to WhatsApp with a pre-filled message.
- * Number will be updated later.
+ * Hides automatically if NEXT_PUBLIC_WHATSAPP_NUMBER is not set.
  */
 export function WhatsAppPill() {
+    if (!WHATSAPP_NUMBER) return null;
+
     return (
         <a
-            href="https://wa.me/8801XXXXXXXXX?text=Hi!%20I%20saw%20your%20products%20on%20Kumoo%20and%20I%27m%20interested!"
+            href={`https://wa.me/${WHATSAPP_NUMBER}?text=Hi!%20I%20saw%20your%20products%20on%20Kumoo%20and%20I%27m%20interested!`}
             target="_blank"
             rel="noopener noreferrer"
             className="fixed bottom-6 right-6 z-40 flex items-center gap-2 px-5 py-3 rounded-full bg-[#25D366] text-white font-bold text-sm shadow-lg hover:shadow-xl hover:scale-105 active:scale-95 transition-all duration-200"

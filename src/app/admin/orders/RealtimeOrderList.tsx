@@ -13,7 +13,7 @@ export interface Order {
     address: string;
     total_amount: number;
     status: string;
-    [key: string]: any; // Allow other Supabase payload columns
+    [key: string]: unknown; // Allow other Supabase payload columns
 }
 
 export default function RealtimeOrderList({ initialOrders }: { initialOrders: Order[] }) {

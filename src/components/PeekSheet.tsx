@@ -1,10 +1,11 @@
 "use client";
 
-import React, { useEffect, useState, useCallback } from "react";
+import React, { useEffect, useState, useCallback, useRef } from "react";
 import Image from "next/image";
 import { Product } from "@/lib/types";
 import { useCartStore } from "@/store/useCartStore";
 import { Check } from "lucide-react";
+import { DELIVERY_ZONES } from "@/lib/config";
 
 interface PeekSheetProps {
     product: Product | null;
@@ -21,16 +22,42 @@ export function PeekSheet({ product, isOpen, onClose }: PeekSheetProps) {
         onClose();
     }, [onClose]);
 
-    // Manage body scroll and escape key
+    const sheetRef = useRef<HTMLDivElement>(null);
+
+    // Manage body scroll, escape key, and focus trap
     useEffect(() => {
         if (isOpen) {
             document.body.style.overflow = "hidden";
+            // Focus the sheet when opened
+            setTimeout(() => sheetRef.current?.focus(), 100);
         } else {
             document.body.style.overflow = "";
         }
 
         const handleKey = (e: KeyboardEvent) => {
             if (e.key === "Escape") handleClose();
+
+            // Focus trap: keep Tab within the sheet
+            if (e.key === "Tab" && isOpen && sheetRef.current) {
+                const focusable = sheetRef.current.querySelectorAll<HTMLElement>(
+                    'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+                );
+                if (focusable.length === 0) return;
+                const first = focusable[0];
+                const last = focusable[focusable.length - 1];
+
+                if (e.shiftKey) {
+                    if (document.activeElement === first) {
+                        e.preventDefault();
+                        last.focus();
+                    }
+                } else {
+                    if (document.activeElement === last) {
+                        e.preventDefault();
+                        first.focus();
+                    }
+                }
+            }
         };
 
         if (isOpen) document.addEventListener("keydown", handleKey);
@@ -46,6 +73,8 @@ export function PeekSheet({ product, isOpen, onClose }: PeekSheetProps) {
             price: product.price,
             image: product.images[0],
             quantity: 1,
+            ...(product.options?.sizes?.length ? { size: product.options.sizes[0] } : {}),
+            ...(product.options?.colors?.length ? { color: product.options.colors[0].name, colorHex: product.options.colors[0].hex } : {}),
         });
 
         setIsAdded(true);
@@ -58,92 +87,99 @@ export function PeekSheet({ product, isOpen, onClose }: PeekSheetProps) {
         <>
             {/* Soft Blurred Backdrop */}
             <div
-                className={`fixed inset-0 bg-charcoal/40 z-50 backdrop-blur-sm transition-opacity duration-400 ease-out ${isOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
+                className={`fixed inset-0 bg-charcoal/40 z-50 backdrop-blur-sm transition-opacity duration-300 ease-out ${isOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
                     }`}
                 onClick={handleClose}
             />
 
             {/* The Sheet */}
             <div
-                className={`fixed bottom-0 left-0 right-0 sm:left-auto sm:right-0 sm:top-0 sm:w-[450px] sm:h-full z-[51] bg-vanilla sm:rounded-none rounded-t-[32px] sm:border-l-4 border-border transition-transform duration-500 ease-in-out max-h-[92vh] sm:max-h-none overflow-y-auto shadow-[-10px_0_30px_rgba(255,139,167,0.1)] ${isOpen ? "translate-y-0 sm:translate-x-0" : "translate-y-full sm:translate-y-0 sm:translate-x-full"
+                ref={sheetRef}
+                role="dialog"
+                aria-modal="true"
+                aria-label={product ? `Quick view: ${product.name_en}` : "Product quick view"}
+                tabIndex={-1}
+                className={`fixed bottom-0 left-0 right-0 sm:left-auto sm:right-0 sm:top-0 sm:w-[500px] sm:h-full z-[51] bg-vanilla sm:rounded-l-[40px] rounded-t-[32px] sm:rounded-tr-none sm:rounded-br-none sm:border-l-[1.5px] border-border transition-transform duration-500 ease-[cubic-bezier(0.34,1.56,0.64,1)] shadow-[-20px_0_60px_rgba(169,143,190,0.15)] outline-none ${isOpen ? "translate-y-0 sm:translate-x-0" : "translate-y-full sm:translate-y-0 sm:translate-x-[110%]"
                     }`}
             >
                 {/* Mobile Drag Handle */}
-                <div className="w-12 h-1 bg-border rounded-full mx-auto mt-4 mb-2 sm:hidden" />
+                <div className="w-12 h-1.5 bg-border rounded-full mx-auto mt-4 mb-2 sm:hidden" />
 
-                <div className="p-6 sm:p-8 flex flex-col h-full">
+                <div className="p-6 sm:px-10 flex flex-col h-full overflow-y-auto overflow-x-hidden relative pb-[120px] custom-scrollbar">
+                    <div className="flex justify-between items-center mb-6 pt-2 sm:pt-6">
+                        <h2 className="text-[12px] font-bold uppercase tracking-[0.2em] text-melon flex items-center gap-2">
+                            Peek-a-Boo!
+                        </h2>
+                        <button onClick={handleClose} className="w-10 h-10 rounded-full flex items-center justify-center bg-white border border-border text-charcoal shadow-sm hover:border-melon hover:text-melon hover:shadow-tactile active:scale-90 transition-all z-20">
+                            ✕
+                        </button>
+                    </div>
 
-                    <button onClick={handleClose} className="absolute top-6 right-6 w-10 h-10 bg-white border-2 border-border rounded-full flex items-center justify-center text-charcoal shadow-sm hover:bg-melon hover:border-melon hover:text-white hover:shadow-tactile transition-all hidden sm:flex">
-                        ✕
-                    </button>
+                    <div className="flex flex-col gap-5">
+                        {/* Hero Header */}
+                        <div className="flex flex-col gap-1 items-center text-center">
+                            <h2 className="font-display font-bold text-3xl sm:text-4xl text-charcoal leading-tight tracking-tight">
+                                {product.name_en}
+                            </h2>
+                            <span className="text-2xl font-bold text-melon font-body">
+                                ৳{product.price}
+                            </span>
+                        </div>
 
-                    <div className="flex-grow flex flex-col pt-4 sm:pt-8">
-                        {/* Product Image */}
-                        <div className="relative aspect-square w-full rounded-[32px] overflow-hidden bg-white mb-8 border-2 border-border p-4 shadow-sm anim-float-y">
+                        {/* Product Feature Image */}
+                        <div className="relative w-[65%] max-w-[240px] aspect-[4/5] rounded-[32px] overflow-hidden bg-white border-[2px] border-border mx-auto shrink-0 shadow-tactile my-2">
                             <Image
                                 src={product.images[0]}
                                 alt={product.name_en}
                                 fill
-                                className="object-cover p-4 drop-shadow-md"
-                                unoptimized
-                                priority
+                                className="object-cover transition-transform duration-700 hover:scale-105"
+                                sizes="240px"
                             />
-
-                            {/* Stock Tag on Image */}
-                            {product.stock <= 3 && product.stock > 0 && (
-                                <span className="absolute top-4 right-4 z-10 inline-block px-3 py-1 text-[11px] font-bold uppercase tracking-widest text-white bg-danger rounded-full shadow-sm">
-                                    LOW STOCK
-                                </span>
-                            )}
-                            {product.stock === 0 && (
-                                <span className="absolute top-4 right-4 z-10 inline-block px-3 py-1 text-[11px] font-bold uppercase tracking-widest text-ink-muted border-2 border-border bg-white rounded-full">
-                                    SOLD OUT
-                                </span>
-                            )}
                         </div>
 
-                        {/* Name + Price */}
-                        <div className="mb-6 flex flex-col items-center text-center">
-                            <h2 className="font-display font-bold text-3xl text-charcoal leading-tight mb-2">
-                                {product.name_en}
-                            </h2>
-                            <div className="flex items-center justify-center gap-3">
-                                <span className="text-price font-bold text-2xl text-melon bg-white px-4 py-1 rounded-full border-2 border-melon shadow-sm">
-                                    ৳{product.price}
+                        {/* Description Section */}
+                        <div className="bg-vanilla/50 rounded-[24px] p-5 border-[1.5px] border-border/60">
+                            <h4 className="text-[11px] font-bold uppercase tracking-widest text-charcoal/40 mb-2 flex items-center gap-2">
+                                📝 The Squish Details
+                            </h4>
+                            <p className="text-[14px] text-charcoal/70 leading-relaxed font-medium line-clamp-4">
+                                {product.description_en}
+                            </p>
+                        </div>
+
+                        {/* Useful Summary Details */}
+                        <div className="space-y-3 mb-6 flex-1">
+                            <div className="flex justify-between items-center text-[11px] font-bold uppercase tracking-widest bg-white py-3 px-4 rounded-xl border border-border mt-2">
+                                <span className="text-charcoal/40 flex items-center gap-2">📦 Availability</span>
+                                <span className={product.stock > 0 ? "text-mint" : "text-danger"}>
+                                    {product.stock > 0 ? "In Stock" : "All gone! 🥺"}
                                 </span>
-                                {product.compare_at_price && (
-                                    <span className="text-ink-muted line-through text-lg font-body font-bold">
-                                        ৳{product.compare_at_price}
-                                    </span>
-                                )}
+                            </div>
+                            <div className="flex justify-between items-center text-[11px] font-bold uppercase tracking-widest bg-white py-3 px-4 rounded-xl border border-border">
+                                <span className="text-charcoal/40 flex items-center gap-2">🚚 Standard Delivery</span>
+                                <span className="text-charcoal/70">{DELIVERY_ZONES.inside.eta} (৳{DELIVERY_ZONES.inside.fee}-{DELIVERY_ZONES.outside.fee})</span>
+                            </div>
+                            <div className="flex justify-between items-center text-[11px] font-bold uppercase tracking-widest bg-white py-3 px-4 rounded-xl border border-border">
+                                <span className="text-charcoal/40 flex items-center gap-2">☁️ Material</span>
+                                <span className="text-charcoal/70">Premium Plush</span>
                             </div>
                         </div>
-
-                        <div className="prose prose-sm text-charcoal/80 font-body font-medium mb-10 text-center mx-auto line-clamp-3">
-                            {product.description_en}
-                        </div>
-
-                        {/* Actions */}
-                        <div className="mt-auto">
-                            <button
-                                onClick={handleAddToCart}
-                                disabled={product.stock === 0}
-                                className={`btn-primary w-full py-4 text-lg flex justify-center items-center gap-2 transition-all ${isAdded ? '!bg-mint !border-mint !text-charcoal shadow-tactile' : ''}`}
-                            >
-                                {product.stock === 0
-                                    ? "Sold Out"
-                                    : isAdded
-                                        ? <><Check size={20} /> Added to Cart</>
-                                        : "Add to Cart"}
-                            </button>
-                            <button
-                                onClick={handleClose}
-                                className="w-full py-4 text-charcoal/50 text-xs uppercase tracking-widest font-bold hover:text-melon mt-3 transition-colors rounded-full"
-                            >
-                                Continue Shopping
-                            </button>
-                        </div>
                     </div>
+                </div>
+
+                {/* Actions Pin to Bottom */}
+                <div className="absolute bottom-0 left-0 right-0 bg-vanilla/80 backdrop-blur-xl p-6 sm:px-10 border-t border-border z-20">
+                    <button
+                        onClick={handleAddToCart}
+                        disabled={product.stock === 0}
+                        className={`btn-primary w-full py-4 text-base sm:text-lg flex justify-center items-center gap-2 transition-all font-bold tracking-wide ${isAdded ? '!bg-mint !border-mint !text-charcoal shadow-tactile' : ''}`}
+                    >
+                        {product.stock === 0
+                            ? "Out of Stock"
+                            : isAdded
+                                ? <><Check size={20} /> Popped in Cart!</>
+                                : "Add to my Cart"}
+                    </button>
                 </div>
             </div>
         </>
