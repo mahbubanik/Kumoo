@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import Image from "next/image";
 import { Package, ShoppingCart, Settings, LogOut, Home, UserCircle, FileText, Tag, Menu, X } from "lucide-react";
 
 export function AdminSidebar({ signOutAction }: { signOutAction: () => Promise<void> }) {
@@ -18,9 +19,8 @@ export function AdminSidebar({ signOutAction }: { signOutAction: () => Promise<v
         <>
             {/* Mobile Header - Only visible on small screens */}
             <div className="md:hidden flex items-center justify-between bg-os-surface border-b border-os-border p-4 sticky top-0 z-30">
-                <Link href="/admin" className="font-display font-bold text-xl text-os-primary tracking-tight flex items-center gap-2">
-                    <span className="w-6 h-6 rounded-md bg-os-primary text-os-primary-fg flex items-center justify-center text-xs">K</span>
-                    Kumoo OS
+                <Link href="/admin" className="transition-transform hover:scale-105">
+                    <Image src="/brand-logo.png" alt="Kumoo Logo" width={200} height={69} className="h-[52px] w-auto" priority />
                 </Link>
                 <button
                     onClick={() => setIsOpen(!isOpen)}
@@ -40,9 +40,8 @@ export function AdminSidebar({ signOutAction }: { signOutAction: () => Promise<v
             <aside className={`fixed md:relative top-0 bottom-0 left-0 z-50 w-[260px] bg-os-surface border-r border-os-border shrink-0 flex flex-col transition-transform duration-300 ease-in-out md:translate-x-0 ${isOpen ? "translate-x-0" : "-translate-x-full"}`}>
                 <div className="p-5 border-b border-os-border hidden md:flex items-center justify-between">
                     <div>
-                        <Link href="/admin" className="font-display font-bold text-xl text-os-primary tracking-tight flex items-center gap-2">
-                            <span className="w-6 h-6 rounded-md bg-os-primary text-os-primary-fg flex items-center justify-center text-xs">K</span>
-                            Kumoo OS
+                        <Link href="/admin" className="transition-transform hover:scale-105 block">
+                            <Image src="/brand-logo.png" alt="Kumoo Logo" width={200} height={69} className="h-[52px] w-auto" priority />
                         </Link>
                     </div>
                 </div>

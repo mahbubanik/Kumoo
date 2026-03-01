@@ -25,7 +25,7 @@ export function Footer() {
                     {/* Brand Statement */}
                     <div className="max-w-md text-center lg:text-left flex flex-col items-center lg:items-start z-10 w-full">
                         <Link href="/" className="inline-block mb-6 transition-transform hover:scale-105 duration-300">
-                            <Image src="/brand-logo.png" alt="Kumoo Logo" width={200} height={69} className="h-14 sm:h-16 w-auto" priority />
+                            <Image src="/brand-logo.png" alt="Kumoo Logo" width={200} height={69} className="h-[72px] sm:h-20 w-auto" priority />
                         </Link>
                         <p className="font-medium leading-relaxed text-charcoal/70 tracking-wide text-lg">
                             Crafting joy in every stitch. Handmade crochet artifacts designed for a softer, fluffier world.
