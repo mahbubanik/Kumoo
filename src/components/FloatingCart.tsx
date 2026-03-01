@@ -2,10 +2,12 @@
 
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useCartStore } from "@/store/useCartStore";
 
 export function FloatingCart() {
     const [mounted, setMounted] = useState(false);
+    const pathname = usePathname();
     const getCartCount = useCartStore((state) => state.getCartCount);
 
     useEffect(() => {
@@ -14,7 +16,8 @@ export function FloatingCart() {
     }, []);
 
     // Don't show until mounted to prevent hydration mismatch on icon scale
-    if (!mounted) return null;
+    // Hide on cart page (redundant) and admin pages
+    if (!mounted || pathname === '/cart' || pathname.startsWith('/admin')) return null;
 
     const count = getCartCount();
 

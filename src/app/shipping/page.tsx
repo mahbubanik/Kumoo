@@ -34,7 +34,7 @@ export default function ShippingPage() {
                 <div className="max-w-3xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-8 line-height-relaxed">
 
                     {/* Zones */}
-                    <div className="bg-[#F2CDCD]/20 border-[1.5px] border-[#F2CDCD]/40 rounded-[32px] p-8 md:p-10">
+                    <div className="bg-[#F2CDCD]/20 border-[1.5px] border-[#F2CDCD]/40 rounded-[32px] p-6 md:p-10">
                         <div className="w-12 h-12 rounded-full bg-white mb-6 flex items-center justify-center shadow-sm">
                             <span className="text-2xl">🛵</span>
                         </div>
@@ -55,7 +55,7 @@ export default function ShippingPage() {
                         </ul>
                     </div>
 
-                    <div className="bg-[#E5DEF7]/20 border-[1.5px] border-[#E5DEF7]/40 rounded-[32px] p-8 md:p-10">
+                    <div className="bg-[#E5DEF7]/20 border-[1.5px] border-[#E5DEF7]/40 rounded-[32px] p-6 md:p-10">
                         <div className="w-12 h-12 rounded-full bg-white mb-6 flex items-center justify-center shadow-sm">
                             <span className="text-2xl">🚚</span>
                         </div>

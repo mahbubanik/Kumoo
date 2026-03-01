@@ -6,14 +6,15 @@ import { createClient } from "@/utils/supabase/server";
 import { notFound } from "next/navigation";
 import { OrderStatusSelector } from "./OrderStatusSelector";
 
-export default async function OrderDetailsPage({ params }: { params: { id: string } }) {
+export default async function OrderDetailsPage({ params }: { params: Promise<{ id: string }> }) {
+    const { id } = await params;
     const supabase = await createClient();
 
     // 1. Fetch Order
     const { data: order, error: orderError } = await supabase
         .from("orders")
         .select("*")
-        .eq("id", params.id)
+        .eq("id", id)
         .single();
 
     if (orderError || !order) {
@@ -24,7 +25,7 @@ export default async function OrderDetailsPage({ params }: { params: { id: strin
     const { data: orderItems } = await supabase
         .from("order_items")
         .select("*, products(name, price, images)")
-        .eq("order_id", params.id);
+        .eq("order_id", id);
 
     const date = new Date(order.created_at).toLocaleString('en-US', {
         month: 'short', day: 'numeric', year: 'numeric',

@@ -40,13 +40,12 @@ export function ImageGallery({ images, alt }: ImageGalleryProps) {
         return () => stopAutoPlay();
     }, [startAutoPlay, stopAutoPlay]);
 
-    // Scroll to current image
+    // Scroll to current image — use scrollLeft instead of scrollIntoView to prevent page jumping on mobile
     useEffect(() => {
         if (scrollRef.current) {
-            const target = scrollRef.current.children[currentIndex] as HTMLElement;
-            if (target) {
-                target.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "start" });
-            }
+            const container = scrollRef.current;
+            const targetScrollLeft = currentIndex * container.clientWidth;
+            container.scrollTo({ left: targetScrollLeft, behavior: "smooth" });
         }
     }, [currentIndex]);
 
