@@ -24,10 +24,13 @@ export function WhatsAppPill() {
     if (!WHATSAPP_NUMBER) return null;
     if (pathname.startsWith("/admin") || pathname === "/cart") return null;
 
+    const isProductPage = pathname.startsWith("/shop/") && pathname.length > 6;
+    const bottomClass = isProductPage ? "bottom-[90px] lg:bottom-6" : "bottom-6";
+
     const waUrl = `https://wa.me/${WHATSAPP_NUMBER}?text=Hi!%20I%27m%20interested%20in%20your%20handcrafted%20products%20on%20Kumoo%20🧶`;
 
     return (
-        <div className="fixed bottom-6 right-6 z-40 flex flex-col items-end gap-3">
+        <div className={`fixed ${bottomClass} right-6 z-40 flex flex-col items-end gap-3 transition-all duration-300`}>
             {/* Chat Prompt Bubble */}
             {showBubble && !dismissed && (
                 <div className="relative bg-white rounded-2xl shadow-lg border border-border/60 p-4 pr-8 max-w-[240px] animate-fade-in">

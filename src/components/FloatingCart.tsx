@@ -16,8 +16,9 @@ export function FloatingCart() {
     }, []);
 
     // Don't show until mounted to prevent hydration mismatch on icon scale
-    // Hide on cart page (redundant) and admin pages
-    if (!mounted || pathname === '/cart' || pathname.startsWith('/admin')) return null;
+    // Hide on cart page (redundant), admin pages, and product pages (to avoid clutter with sticky CTA)
+    const isProductPage = pathname.startsWith('/shop/') && pathname.length > 6;
+    if (!mounted || pathname === '/cart' || pathname.startsWith('/admin') || isProductPage) return null;
 
     const count = getCartCount();
 
