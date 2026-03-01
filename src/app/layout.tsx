@@ -36,7 +36,7 @@ export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || 'https://kumoo.shop'),
   title: {
     template: "%s | Kumoo",
-    default: "Kumoo — Handcrafted Crochet Plushies & Accessories"
+    default: "Kumoo - Handcrafted Crochet Plushies & Accessories"
   },
   description:
     "Adorable handmade crochet plushies, bags, and keychains crafted with premium yarn. Made with love in Dhaka. Cash on delivery available.",
@@ -54,7 +54,7 @@ export const metadata: Metadata = {
     "handcrafted crochet gifts",
   ],
   openGraph: {
-    title: "Kumoo — Handcrafted Crochet Plushies",
+    title: "Kumoo - Handcrafted Crochet Plushies",
     description: "Adorable handmade crochet plushies, bags, and keychains crafted with premium yarn.",
     type: "website",
     locale: "en_US",
@@ -63,7 +63,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Kumoo — Handcrafted Crochet Plushies",
+    title: "Kumoo - Handcrafted Crochet Plushies",
     description: "Adorable handmade crochet plushies, bags, and keychains crafted with premium yarn.",
     images: ["/logo-new.png"],
   }

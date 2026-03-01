@@ -37,12 +37,12 @@ export default function AboutPage() {
                             Our Story
                         </h2>
                         <p className="font-body text-charcoal/70 text-base leading-relaxed font-medium">
-                            Kumoo started as a quiet hobby — a single crochet hook, a ball of yarn, and a desire
+                            Kumoo started as a quiet hobby - a single crochet hook, a ball of yarn, and a desire
                             to create something soft and meaningful. What began as gifts for friends slowly grew
                             into a small studio dedicated to handcrafted plushies, bags, and accessories.
                         </p>
                         <p className="font-body text-charcoal/70 text-base leading-relaxed font-medium">
-                            Every piece is made by hand in Dhaka, Bangladesh. No machines, no mass production —
+                            Every piece is made by hand in Dhaka, Bangladesh. No machines, no mass production -
                             just deliberate patience and premium yarn.
                         </p>
                     </section>
@@ -56,7 +56,7 @@ export default function AboutPage() {
                         <div className="space-y-4">
                             {[
                                 { emoji: "🧶", title: "Craft Over Speed", desc: "Each piece takes hours of careful stitching. We never rush." },
-                                { emoji: "💖", title: "Made With Love", desc: "Every plushie carries intentional detail — from blush marks to tiny accessories." },
+                                { emoji: "💖", title: "Made With Love", desc: "Every plushie carries intentional detail - from blush marks to tiny accessories." },
                                 { emoji: "🌿", title: "Premium Materials", desc: "We use only soft, durable yarn that's safe and long-lasting." },
                             ].map((value) => (
                                 <div key={value.title} className="flex gap-4 items-start p-5 bg-vanilla border-[1.5px] border-border rounded-[20px]">

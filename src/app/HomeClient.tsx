@@ -358,7 +358,7 @@ export function HomeClient({ featuredProducts }: { featuredProducts: Product[] }
                                                 &quot;{review.quote}&quot;
                                             </p>
                                             <p className="text-melon font-display font-bold text-sm uppercase tracking-widest text-right">
-                                                — {review.name}
+                                                - {review.name}
                                             </p>
                                         </div>
                                     ))}

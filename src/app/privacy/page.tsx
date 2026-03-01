@@ -64,7 +64,7 @@ const sections = [
         content: (
             <>
                 <p>
-                    We share your Personal Information with third-party services that help us operate. We use Supabase for database and authentication — you can read their privacy policy at{" "}
+                    We share your Personal Information with third-party services that help us operate. We use Supabase for database and authentication - you can read their privacy policy at{" "}
                     <a href="https://supabase.com/privacy" target="_blank" rel="noopener noreferrer" className="text-melon hover:text-lilac underline underline-offset-2 transition-colors">
                         supabase.com/privacy
                     </a>.

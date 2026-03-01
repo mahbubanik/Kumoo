@@ -25,12 +25,12 @@ export function WhatsAppPill() {
     if (pathname.startsWith("/admin") || pathname === "/cart") return null;
 
     const isProductPage = pathname.startsWith("/shop/") && pathname.length > 6;
-    const bottomClass = isProductPage ? "bottom-[90px] lg:bottom-6" : "bottom-6";
+    const bottomClass = isProductPage ? "bottom-[160px] lg:bottom-24" : "bottom-[100px] md:bottom-24";
 
     const waUrl = `https://wa.me/${WHATSAPP_NUMBER}?text=Hi!%20I%27m%20interested%20in%20your%20handcrafted%20products%20on%20Kumoo%20🧶`;
 
     return (
-        <div className={`fixed ${bottomClass} right-6 z-40 flex flex-col items-end gap-3 transition-all duration-300`}>
+        <div className={`fixed ${bottomClass} left-6 sm:left-8 z-40 flex flex-col items-start gap-3 transition-all duration-300`}>
             {/* Chat Prompt Bubble */}
             {showBubble && !dismissed && (
                 <div className="relative bg-white rounded-2xl shadow-lg border border-border/60 p-4 pr-8 max-w-[240px] animate-fade-in">
@@ -45,7 +45,7 @@ export function WhatsAppPill() {
                         Hi there! 👋 Need help choosing the perfect plushie?
                     </p>
                     {/* Tail */}
-                    <div className="absolute -bottom-2 right-6 w-4 h-4 bg-white border-b border-r border-border/60 transform rotate-45" />
+                    <div className="absolute -bottom-2 left-6 w-4 h-4 bg-white border-b border-r border-border/60 transform rotate-45" />
                 </div>
             )}
 

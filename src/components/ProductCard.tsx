@@ -46,7 +46,7 @@ export function ProductCard({
                 <div className="absolute top-4 left-4 flex flex-col gap-2 z-10">
                     {product.featured && product.stock > 0 && (
                         <span className="inline-block px-3 py-1 text-[11px] font-bold uppercase tracking-widest text-amber-900 bg-amber-200 rounded-full shadow-sm">
-                            ⭐ Best Seller
+                            Best Seller
                         </span>
                     )}
                     {product.stock <= 3 && product.stock > 0 && (

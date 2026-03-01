@@ -66,7 +66,7 @@ export function DiarySnippet({ product }: { product: Product }) {
                         {/* Hand-drawn underline / signature area */}
                         <div className="mt-12 text-right">
                             <span style={{ fontFamily: 'var(--font-handwriting)' }} className="text-2xl text-charcoal block -rotate-3 mr-4">
-                                — Crafted with love 💖
+                                Crafted with love 💖
                             </span>
                         </div>
                     </div>
