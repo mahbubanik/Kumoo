@@ -44,7 +44,7 @@ export function ProductDetailsClient({ product, relatedProducts }: { product: Pr
         setIsAdded(true);
         setTimeout(() => {
             setIsAdded(false);
-            router.push('/cart');
+            router.push('/cart', { scroll: false });
         }, 400);
     };
 

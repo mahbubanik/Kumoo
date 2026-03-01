@@ -1,10 +1,9 @@
 'use server'
 
-import { createClient } from '@/utils/supabase/server'
+import { supabaseAdmin as supabase } from '@/lib/supabaseAdmin'
 import { DELIVERY_ZONES } from '@/lib/config'
 
 export async function validatePromoCode(code: string) {
-    const supabase = await createClient();
 
     const { data } = await supabase
         .from('promo_codes')
@@ -24,7 +23,6 @@ export async function submitOrder(
     items: { id: string; name: string; price: number; quantity: number; image: string; size?: string; color?: string; }[],
     promoCode?: string
 ) {
-    const supabase = await createClient();
 
     if (!items || items.length === 0) {
         return { error: 'Cannot submit an empty order.' };

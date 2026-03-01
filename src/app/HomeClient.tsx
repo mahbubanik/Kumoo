@@ -97,7 +97,7 @@ export function HomeClient({ featuredProducts }: { featuredProducts: Product[] }
                 {/* ═══════════════════════════════════════════════════
           HERO — Typography-Driven
           ═══════════════════════════════════════════════════ */}
-                <section className="relative pt-48 pb-24 sm:pt-[22vh] sm:pb-32 overflow-hidden">
+                <section className="relative pt-36 sm:pt-48 pb-24 sm:pb-32 overflow-hidden">
 
                     {/* Soft ambient blobs */}
                     <div className="absolute top-20 left-1/4 w-80 h-80 bg-melon/10 rounded-full blur-3xl" />
@@ -292,7 +292,7 @@ export function HomeClient({ featuredProducts }: { featuredProducts: Product[] }
                 <section className="py-20 sm:py-24 mb-24 sm:mb-32 bg-vanilla overflow-hidden relative">
                     <div className="layout-container">
 
-                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-24">
+                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 sm:gap-16 lg:gap-24">
                             {/* Custom Orders - Pastel Card */}
                             <div className="flex flex-col justify-center border-2 border-charcoal bg-rose rounded-[36px] p-8 sm:p-12 shadow-[8px_8px_0px_rgba(44,44,44,1)] transform hover:-translate-y-2 transition-transform">
                                 <span className="inline-block px-4 py-1 bg-white text-charcoal font-display font-bold text-[13px] uppercase tracking-widest rounded-full shadow-sm mb-6 w-max border-2 border-charcoal">

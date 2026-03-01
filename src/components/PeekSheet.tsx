@@ -99,13 +99,13 @@ export function PeekSheet({ product, isOpen, onClose }: PeekSheetProps) {
                 aria-modal="true"
                 aria-label={product ? `Quick view: ${product.name_en}` : "Product quick view"}
                 tabIndex={-1}
-                className={`fixed bottom-0 left-0 right-0 sm:left-auto sm:right-0 sm:top-0 sm:w-[500px] sm:h-full z-[51] bg-vanilla sm:rounded-l-[40px] rounded-t-[32px] sm:rounded-tr-none sm:rounded-br-none sm:border-l-[1.5px] border-border transition-transform duration-500 ease-[cubic-bezier(0.34,1.56,0.64,1)] shadow-[-20px_0_60px_rgba(169,143,190,0.15)] outline-none ${isOpen ? "translate-y-0 sm:translate-x-0" : "translate-y-full sm:translate-y-0 sm:translate-x-[110%]"
+                className={`fixed bottom-0 left-0 right-0 sm:left-auto sm:right-0 sm:top-0 sm:w-[500px] sm:h-full max-h-[85vh] sm:max-h-full z-[51] bg-vanilla sm:rounded-l-[40px] rounded-t-[32px] sm:rounded-tr-none sm:rounded-br-none sm:border-l-[1.5px] border-border transition-transform duration-500 ease-[cubic-bezier(0.34,1.56,0.64,1)] shadow-[-20px_0_60px_rgba(169,143,190,0.15)] outline-none flex flex-col ${isOpen ? "translate-y-0 sm:translate-x-0" : "translate-y-full sm:translate-y-0 sm:translate-x-[110%]"
                     }`}
             >
                 {/* Mobile Drag Handle */}
                 <div className="w-12 h-1.5 bg-border rounded-full mx-auto mt-4 mb-2 sm:hidden" />
 
-                <div className="p-6 sm:px-10 flex flex-col h-full overflow-y-auto overflow-x-hidden relative pb-[120px] custom-scrollbar">
+                <div className="p-6 sm:px-10 flex flex-col flex-1 overflow-y-auto overflow-x-hidden relative pb-[120px] custom-scrollbar">
                     <div className="flex justify-between items-center mb-6 pt-2 sm:pt-6">
                         <h2 className="text-[12px] font-bold uppercase tracking-[0.2em] text-melon flex items-center gap-2">
                             Peek-a-Boo!

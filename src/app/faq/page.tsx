@@ -53,7 +53,7 @@ export default function FAQPage() {
                             a: "Spot cleaning with mild soap and cold water is best. If a full wash is necessary, place the item in a mesh laundry bag and wash on a delicate, cold cycle. Air dry completely — never tumble dry."
                         }
                     ].map((faq, i) => (
-                        <div key={i} className="bg-white rounded-[28px] p-8 sm:p-10 border-[1.5px] border-border shadow-sm transition-all hover:shadow-md">
+                        <div key={i} className="bg-white rounded-[28px] p-5 sm:p-8 sm:px-10 border-[1.5px] border-border shadow-sm transition-all hover:shadow-md">
                             <h3 className="font-display font-bold text-xl text-charcoal mb-4 leading-tight">{faq.q}</h3>
                             <p className="font-body text-charcoal/70 text-base leading-relaxed font-medium">
                                 {faq.a}
