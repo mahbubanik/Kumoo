@@ -60,7 +60,7 @@ export function Navbar() {
                             href="/"
                             className="flex items-center group transition-transform hover:scale-105"
                         >
-                            <Image src="/brand-logo.png" alt="Kumoo Logo" width={280} height={96} className="w-auto h-[72px] sm:h-20 md:h-[88px]" priority />
+                            <Image src="/brand-logo.png" alt="Kumoo Logo" width={280} height={96} className="w-auto h-[88px] sm:h-[96px] md:h-[104px]" priority />
                         </Link>
 
                         {/* Desktop Links */}

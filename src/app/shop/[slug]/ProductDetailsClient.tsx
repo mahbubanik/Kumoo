@@ -42,6 +42,12 @@ export function ProductDetailsClient({ product, relatedProducts }: { product: Pr
         return () => observer.disconnect();
     }, []);
 
+    // Hydrate dynamic delivery date purely on the client side
+    const [estimatedDate, setEstimatedDate] = useState<string>("");
+    useEffect(() => {
+        setEstimatedDate(getEstimatedDelivery('inside'));
+    }, []);
+
     const handleAddToCart = () => {
         addItem({
             id: product.id,
@@ -182,8 +188,12 @@ export function ProductDetailsClient({ product, relatedProducts }: { product: Pr
                                 </div>
                             </div>
                             {/* Estimated Delivery Date */}
-                            <p className="text-[12px] text-charcoal/50 font-medium">
-                                📦 Get it by <span className="font-bold text-charcoal/70">{getEstimatedDelivery('inside')}</span> (Dhaka)
+                            <p className="text-[12px] text-charcoal/50 font-medium h-4">
+                                {estimatedDate ? (
+                                    <>📦 Get it by <span className="font-bold text-charcoal/70">{estimatedDate}</span> (Dhaka)</>
+                                ) : (
+                                    <span className="animate-pulse">📦 Calculating delivery date...</span>
+                                )}
                             </p>
                         </div>
 

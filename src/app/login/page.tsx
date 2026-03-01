@@ -36,13 +36,13 @@ export default function LoginPage() {
             <div className="absolute bottom-20 right-10 w-96 h-96 bg-lilac/10 rounded-full blur-3xl pointer-events-none" />
 
             <div className="w-full max-w-md bg-white p-10 rounded-[32px] shadow-sm border border-border relative z-10">
-                <div className="text-center mb-10">
+                <div className="text-center mb-10 flex flex-col items-center">
                     <Link href="/" className="inline-block p-2 bg-charcoal text-white rounded-lg mb-6 hover:-translate-y-0.5 transition-transform">
                         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
                             <path d="M12 2L2 12h3v8h6v-6h2v6h6v-8h3L12 2z"></path>
                         </svg>
                     </Link>
-                    <h1 className="font-display font-bold text-2xl text-charcoal mb-2">Kumoo Admin</h1>
+                    <img src="/brand-logo.png" alt="Kumoo Admin Logo" className="h-[72px] w-auto mb-4" />
                     <p className="font-body text-charcoal/50 text-sm font-medium">Verify your credentials to continue.</p>
                 </div>
 

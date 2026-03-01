@@ -20,7 +20,7 @@ export function AdminSidebar({ signOutAction }: { signOutAction: () => Promise<v
             {/* Mobile Header - Only visible on small screens */}
             <div className="md:hidden flex items-center justify-between bg-os-surface border-b border-os-border p-4 sticky top-0 z-30">
                 <Link href="/admin" className="transition-transform hover:scale-105">
-                    <Image src="/brand-logo.png" alt="Kumoo Logo" width={200} height={69} className="h-[52px] w-auto" priority />
+                    <Image src="/brand-logo.png" alt="Kumoo Logo" width={200} height={69} className="h-[72px] w-auto" priority />
                 </Link>
                 <button
                     onClick={() => setIsOpen(!isOpen)}
@@ -41,7 +41,7 @@ export function AdminSidebar({ signOutAction }: { signOutAction: () => Promise<v
                 <div className="p-5 border-b border-os-border hidden md:flex items-center justify-between">
                     <div>
                         <Link href="/admin" className="transition-transform hover:scale-105 block">
-                            <Image src="/brand-logo.png" alt="Kumoo Logo" width={200} height={69} className="h-[52px] w-auto" priority />
+                            <Image src="/brand-logo.png" alt="Kumoo Logo" width={200} height={69} className="h-[72px] w-auto" priority />
                         </Link>
                     </div>
                 </div>
