@@ -9,6 +9,7 @@ import { FloatingCart } from "@/components/FloatingCart";
 import { MetaPixel } from "@/components/MetaPixel";
 import { PromoBanner } from "@/components/PromoBanner";
 import { StorefrontUI } from "@/components/StorefrontUI";
+import { Toaster } from "sonner";
 
 const dynaPuff = DynaPuff({
   variable: "--font-dynapuff",
@@ -92,6 +93,7 @@ export default function RootLayout({
         <Suspense fallback={null}>
           <MetaPixel />
         </Suspense>
+        <Toaster position="top-center" richColors />
       </body>
     </html>
   );

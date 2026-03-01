@@ -21,7 +21,8 @@ export async function validatePromoCode(code: string) {
 
 export async function submitOrder(
     orderData: { name: string; phone: string; address: string; area: string; total: number },
-    items: { id: string; name: string; price: number; quantity: number; image: string; size?: string; color?: string; }[]
+    items: { id: string; name: string; price: number; quantity: number; image: string; size?: string; color?: string; }[],
+    promoCode?: string
 ) {
     const supabase = await createClient();
 
@@ -52,6 +53,24 @@ export async function submitOrder(
         }
         serverTotal += dbPrice * item.quantity;
     }
+
+    // Server-side promo code re-validation
+    let discountPercentage = 0;
+    if (promoCode) {
+        const { data: promoData } = await supabase
+            .from('promo_codes')
+            .select('discount_percentage, is_active')
+            .eq('code', promoCode.toUpperCase())
+            .single();
+
+        if (promoData && promoData.is_active) {
+            discountPercentage = promoData.discount_percentage;
+        }
+    }
+
+    const subtotalBeforeShipping = serverTotal - shippingFee;
+    const discountAmount = discountPercentage > 0 ? Math.round(subtotalBeforeShipping * (discountPercentage / 100)) : 0;
+    serverTotal = subtotalBeforeShipping - discountAmount + shippingFee;
 
     const { data: order, error: orderError } = await supabase
         .from('orders')

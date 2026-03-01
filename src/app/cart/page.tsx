@@ -86,7 +86,7 @@ export default function CartCheckoutPage() {
 
         try {
             // Write to Supabase Ledger
-            const result = await submitOrder({ ...formData, total }, items);
+            const result = await submitOrder({ ...formData, total }, items, activePromo?.code);
 
             if (result.error) {
                 toast.error(result.error);
@@ -188,17 +188,20 @@ export default function CartCheckoutPage() {
                                         <div className="flex items-center justify-between mt-auto pt-4 sm:pt-0">
                                             <div className="flex items-center gap-3 bg-vanilla border-[1.5px] border-border rounded-full px-3 py-1.5 text-[14px]">
                                                 <button
+                                                    type="button"
                                                     onClick={() => updateQuantity(item.id, Math.max(1, item.quantity - 1), item.size, item.color)}
                                                     className="text-charcoal/40 hover:text-melon transition-colors font-bold w-5 flex items-center justify-center"
                                                 >–</button>
                                                 <span className="w-5 text-center text-charcoal font-bold">{item.quantity}</span>
                                                 <button
+                                                    type="button"
                                                     onClick={() => updateQuantity(item.id, item.quantity + 1, item.size, item.color)}
                                                     className="text-charcoal/40 hover:text-melon transition-colors font-bold w-5 flex items-center justify-center"
                                                 >+</button>
                                             </div>
 
                                             <button
+                                                type="button"
                                                 onClick={() => removeItem(item.id, item.size, item.color)}
                                                 className="text-[12px] font-bold uppercase tracking-[0.15em] text-charcoal/30 hover:text-rose transition-colors flex items-center gap-1.5"
                                             >

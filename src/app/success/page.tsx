@@ -33,7 +33,7 @@ function SuccessContent() {
             <div className="layout-container relative z-10 max-w-lg">
                 <div className="bg-white rounded-[40px] border-[1.5px] border-border shadow-tactile p-6 sm:p-10 text-center anim-float-y">
                     {/* Mascot Holder with Product Overlay */}
-                    <div className="relative w-32 h-32 mx-auto mb-8 flex items-center justify-center">
+                    <div className="relative w-32 h-32 mx-auto mb-6 flex items-center justify-center">
                         <div className="relative w-full h-full rounded-full overflow-hidden border-4 border-vanilla shadow-lg z-10">
                             <Image
                                 src="/mascot.jpeg"
@@ -64,11 +64,18 @@ function SuccessContent() {
                         )}
                     </div>
 
-                    <h1 className="font-display font-bold text-3xl sm:text-4xl text-charcoal mb-4">
-                        Thank You! ✿
+                    {/* Thank You Card Content */}
+                    <p className="text-melon font-display font-bold text-[13px] uppercase tracking-[0.2em] mb-2">
+                        Order Confirmed ✿
+                    </p>
+                    <h1 className="font-display font-bold text-3xl sm:text-4xl text-charcoal mb-3">
+                        Thank You! 💜
                     </h1>
-                    <p className="text-charcoal/50 font-medium text-lg mb-8 leading-relaxed">
-                        Order <span className="text-melon font-bold">#{orderId}</span> has been successfully registered. We&apos;re getting your yarn ready!
+                    <p className="text-charcoal/50 font-medium text-base mb-2 leading-relaxed">
+                        Order <span className="text-melon font-bold">#{orderId}</span> is safely in our hands.
+                    </p>
+                    <p className="text-charcoal/35 font-medium text-sm mb-8 leading-relaxed">
+                        We&apos;re wrapping your soft surprise with love. You&apos;ll hear from us on WhatsApp shortly!
                     </p>
 
                     <div className="space-y-4">
@@ -85,13 +92,13 @@ function SuccessContent() {
                             href="/shop"
                             className="block w-full py-4 text-xs font-bold uppercase tracking-widest text-charcoal/30 hover:text-charcoal transition-colors focus:outline-none"
                         >
-                            Or Back to Shop
+                            Or Continue Shopping
                         </Link>
                     </div>
 
                     <div className="mt-10 pt-8 border-t border-border/60">
                         <p className="text-[11px] font-bold text-charcoal/30 uppercase tracking-[0.2em]">
-                            Artisan Handcrafted in Dhaka
+                            Handcrafted with 💜 in Dhaka
                         </p>
                     </div>
                 </div>
