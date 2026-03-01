@@ -49,8 +49,8 @@ export function ProductDetailsClient({ product, relatedProducts }: { product: Pr
     };
 
     return (
-        <div className="min-h-screen pt-28 pb-32 bg-white">
-            <div className="layout-container max-w-5xl px-6">
+        <div className="min-h-screen pt-28 sm:pt-28 pb-32 bg-white">
+            <div className="layout-container max-w-5xl px-4 sm:px-6">
                 <nav className="mb-4 pt-0">
                     <Link href="/shop" className="text-[11px] font-bold uppercase tracking-[0.2em] text-charcoal/30 hover:text-charcoal transition-colors flex items-center gap-2">
                         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3">
@@ -60,9 +60,9 @@ export function ProductDetailsClient({ product, relatedProducts }: { product: Pr
                     </Link>
                 </nav>
 
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-24 items-start">
-                    {/* Left: Product Image (Centered Spotlight) */}
-                    <div className="w-full max-w-[420px] mx-auto">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-10 lg:gap-24 items-start">
+                    {/* Left: Product Image — full width on mobile */}
+                    <div className="w-full lg:max-w-[420px] mx-auto">
                         <div className="relative">
                             <ImageGallery
                                 images={product.images}
@@ -85,7 +85,7 @@ export function ProductDetailsClient({ product, relatedProducts }: { product: Pr
                         </div>
 
                         {/* Description - 16px Section Spacing (Consolidated) */}
-                        <div className="mb-4">
+                        <div className="mb-3 sm:mb-4">
                             <p className="text-[16px] text-[#333333]/80 leading-[1.5] max-w-prose">
                                 {product.description_en || "A meticulously handcrafted piece designed with minimal aesthetic intent. Knitted with sustainable yarn sourced directly for quality."}
                             </p>
@@ -135,8 +135,8 @@ export function ProductDetailsClient({ product, relatedProducts }: { product: Pr
                             </div>
                         )}
 
-                        {/* Add to Cart Actions - 24px spacing */}
-                        <div className="flex flex-col sm:flex-row items-center gap-6 mb-8 pt-6 border-t border-border/40">
+                        {/* Add to Cart Actions */}
+                        <div className="flex items-center gap-4 sm:gap-6 mb-6 sm:mb-8 pt-4 sm:pt-6 border-t border-border/40">
                             {/* Quantity Selector - Branded Rounded */}
                             <div className="flex items-center bg-vanilla rounded-full border-[1.5px] border-border overflow-hidden">
                                 <button onClick={() => handleQuantityChange(-1)} className="w-12 h-12 flex items-center justify-center text-xl text-charcoal/40 hover:text-melon transition-colors md:hover:bg-charcoal/5">-</button>

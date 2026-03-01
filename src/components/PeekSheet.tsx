@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState, useCallback, useRef } from "react";
 import Image from "next/image";
+import Link from "next/link";
 import { Product } from "@/lib/types";
 import { useCartStore } from "@/store/useCartStore";
 import { Check } from "lucide-react";
@@ -23,6 +24,8 @@ export function PeekSheet({ product, isOpen, onClose }: PeekSheetProps) {
     }, [onClose]);
 
     const sheetRef = useRef<HTMLDivElement>(null);
+    const touchStartY = useRef<number>(0);
+    const touchDeltaY = useRef<number>(0);
 
     // Manage body scroll, escape key, and focus trap
     useEffect(() => {
@@ -102,8 +105,26 @@ export function PeekSheet({ product, isOpen, onClose }: PeekSheetProps) {
                 className={`fixed bottom-0 left-0 right-0 sm:left-auto sm:right-0 sm:top-0 sm:w-[500px] sm:h-full max-h-[85vh] sm:max-h-full z-[51] bg-vanilla sm:rounded-l-[40px] rounded-t-[32px] sm:rounded-tr-none sm:rounded-br-none sm:border-l-[1.5px] border-border transition-transform duration-500 ease-[cubic-bezier(0.34,1.56,0.64,1)] shadow-[-20px_0_60px_rgba(169,143,190,0.15)] outline-none flex flex-col ${isOpen ? "translate-y-0 sm:translate-x-0" : "translate-y-full sm:translate-y-0 sm:translate-x-[110%]"
                     }`}
             >
-                {/* Mobile Drag Handle */}
-                <div className="w-12 h-1.5 bg-border rounded-full mx-auto mt-4 mb-2 sm:hidden" />
+                {/* Mobile Drag Handle — swipe down to close */}
+                <div
+                    className="w-12 h-1.5 bg-border rounded-full mx-auto mt-4 mb-2 sm:hidden cursor-grab"
+                    onTouchStart={(e) => { touchStartY.current = e.touches[0].clientY; }}
+                    onTouchMove={(e) => {
+                        touchDeltaY.current = e.touches[0].clientY - touchStartY.current;
+                        if (touchDeltaY.current > 0 && sheetRef.current) {
+                            sheetRef.current.style.transform = `translateY(${touchDeltaY.current}px)`;
+                        }
+                    }}
+                    onTouchEnd={() => {
+                        if (touchDeltaY.current > 80) {
+                            handleClose();
+                        }
+                        if (sheetRef.current) {
+                            sheetRef.current.style.transform = '';
+                        }
+                        touchDeltaY.current = 0;
+                    }}
+                />
 
                 <div className="p-6 sm:px-10 flex flex-col flex-1 overflow-y-auto overflow-x-hidden relative pb-[120px] custom-scrollbar">
                     <div className="flex justify-between items-center mb-6 pt-2 sm:pt-6">
@@ -168,18 +189,27 @@ export function PeekSheet({ product, isOpen, onClose }: PeekSheetProps) {
                 </div>
 
                 {/* Actions Pin to Bottom */}
-                <div className="absolute bottom-0 left-0 right-0 bg-vanilla/80 backdrop-blur-xl p-6 sm:px-10 border-t border-border z-20">
-                    <button
-                        onClick={handleAddToCart}
-                        disabled={product.stock === 0}
-                        className={`btn-primary w-full py-4 text-base sm:text-lg flex justify-center items-center gap-2 transition-all font-bold tracking-wide ${isAdded ? '!bg-mint !border-mint !text-charcoal shadow-tactile' : ''}`}
-                    >
-                        {product.stock === 0
-                            ? "Out of Stock"
-                            : isAdded
-                                ? <><Check size={20} /> Popped in Cart!</>
-                                : "Add to my Cart"}
-                    </button>
+                <div className="absolute bottom-0 left-0 right-0 bg-vanilla/80 backdrop-blur-xl p-4 sm:p-6 sm:px-10 border-t border-border z-20">
+                    <div className="flex gap-3">
+                        <Link
+                            href={`/shop/${product.slug}`}
+                            onClick={handleClose}
+                            className="btn-secondary px-4 py-3 sm:py-4 text-sm sm:text-base flex items-center justify-center gap-2 font-bold shrink-0"
+                        >
+                            View Details
+                        </Link>
+                        <button
+                            onClick={handleAddToCart}
+                            disabled={product.stock === 0}
+                            className={`btn-primary flex-1 py-3 sm:py-4 text-sm sm:text-base flex justify-center items-center gap-2 transition-all font-bold tracking-wide ${isAdded ? '!bg-mint !border-mint !text-charcoal shadow-tactile' : ''}`}
+                        >
+                            {product.stock === 0
+                                ? "Out of Stock"
+                                : isAdded
+                                    ? <><Check size={18} /> Added!</>
+                                    : "Add to Cart"}
+                        </button>
+                    </div>
                 </div>
             </div>
         </>
