@@ -8,7 +8,7 @@ import { submitOrder, validatePromoCode } from "./actions";
 import { useRouter } from "next/navigation";
 import { Loader2, Tag, X } from "lucide-react";
 import { toast } from "sonner";
-import { DELIVERY_ZONES } from "@/lib/config";
+import { DELIVERY_ZONES, getEstimatedDelivery } from "@/lib/config";
 
 export default function CartCheckoutPage() {
     const { items, removeItem, updateQuantity, getCartTotal, clearCart } = useCartStore();
@@ -310,7 +310,10 @@ export default function CartCheckoutPage() {
                                                             <span className="font-bold text-[14px] text-charcoal">{zone.label}</span>
                                                             <span className="text-[12px] text-charcoal/50">Est. {zone.time}</span>
                                                         </div>
-                                                        <span className="font-bold text-[14px] text-charcoal">{zone.price}</span>
+                                                        <div className="flex flex-col items-end">
+                                                            <span className="font-bold text-[14px] text-charcoal">{zone.price}</span>
+                                                            <span className="text-[11px] text-charcoal/40">by {getEstimatedDelivery(zone.value)}</span>
+                                                        </div>
                                                     </div>
                                                 </label>
                                             ))}
@@ -409,8 +412,8 @@ export default function CartCheckoutPage() {
 
                         </div>
                     </div>
-                </div>
-            </div>
-        </div>
+                </div >
+            </div >
+        </div >
     );
 }

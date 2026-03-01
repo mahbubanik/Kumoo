@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useCartStore } from "@/store/useCartStore";
@@ -8,7 +8,7 @@ import { ImageGallery } from "@/components/ImageGallery";
 import { ProductCard } from "@/components/ProductCard";
 import { DiarySnippet } from "@/components/DiarySnippet";
 import { Product } from "@/lib/types";
-import { DELIVERY_ZONES } from "@/lib/config";
+import { DELIVERY_ZONES, getEstimatedDelivery } from "@/lib/config";
 
 export function ProductDetailsClient({ product, relatedProducts }: { product: Product, relatedProducts: Product[] }) {
     const router = useRouter();
@@ -28,6 +28,19 @@ export function ProductDetailsClient({ product, relatedProducts }: { product: Pr
     const handleQuantityChange = (delta: number) => {
         setQuantity(prev => Math.max(1, prev + delta));
     };
+
+    // Sticky CTA: show when inline CTA scrolls out of view
+    const ctaRef = useRef<HTMLDivElement>(null);
+    const [showStickyCTA, setShowStickyCTA] = useState(false);
+
+    useEffect(() => {
+        const observer = new IntersectionObserver(
+            ([entry]) => setShowStickyCTA(!entry.isIntersecting),
+            { threshold: 0 }
+        );
+        if (ctaRef.current) observer.observe(ctaRef.current);
+        return () => observer.disconnect();
+    }, []);
 
     const handleAddToCart = () => {
         addItem({
@@ -136,7 +149,7 @@ export function ProductDetailsClient({ product, relatedProducts }: { product: Pr
                         )}
 
                         {/* Add to Cart Actions */}
-                        <div className="flex items-center gap-4 sm:gap-6 mb-6 sm:mb-8 pt-4 sm:pt-6 border-t border-border/40">
+                        <div ref={ctaRef} className="flex items-center gap-4 sm:gap-6 mb-6 sm:mb-8 pt-4 sm:pt-6 border-t border-border/40">
                             {/* Quantity Selector - Branded Rounded */}
                             <div className="flex items-center bg-vanilla rounded-full border-[1.5px] border-border overflow-hidden">
                                 <button onClick={() => handleQuantityChange(-1)} className="w-12 h-12 flex items-center justify-center text-xl text-charcoal/40 hover:text-melon transition-colors md:hover:bg-charcoal/5">-</button>
@@ -155,17 +168,36 @@ export function ProductDetailsClient({ product, relatedProducts }: { product: Pr
                             </button>
                         </div>
 
-                        {/* Delivery Row - Ghost Row */}
-                        <div className="flex items-center gap-8 text-[12px] text-zinc-400 tracking-wide">
-                            <div className="flex items-center gap-2">
-                                <span className="font-bold">DHAKA</span>
-                                <span>{DELIVERY_ZONES.inside.fee} BDT</span>
+                        {/* Delivery Row */}
+                        <div className="flex flex-col gap-3">
+                            <div className="flex items-center gap-8 text-[12px] text-zinc-400 tracking-wide">
+                                <div className="flex items-center gap-2">
+                                    <span className="font-bold">DHAKA</span>
+                                    <span>{DELIVERY_ZONES.inside.fee} BDT</span>
+                                </div>
+                                <div className="w-1 h-1 rounded-full bg-zinc-200"></div>
+                                <div className="flex items-center gap-2">
+                                    <span className="font-bold">OUTSIDE</span>
+                                    <span>{DELIVERY_ZONES.outside.fee} BDT</span>
+                                </div>
                             </div>
-                            <div className="w-1 h-1 rounded-full bg-zinc-200"></div>
-                            <div className="flex items-center gap-2">
-                                <span className="font-bold">OUTSIDE</span>
-                                <span>{DELIVERY_ZONES.outside.fee} BDT</span>
-                            </div>
+                            {/* Estimated Delivery Date */}
+                            <p className="text-[12px] text-charcoal/50 font-medium">
+                                📦 Get it by <span className="font-bold text-charcoal/70">{getEstimatedDelivery('inside')}</span> (Dhaka)
+                            </p>
+                        </div>
+
+                        {/* Trust Badges */}
+                        <div className="flex flex-wrap gap-3 mt-4 pt-4 border-t border-border/30">
+                            <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-vanilla border border-border/60 text-[11px] font-bold text-charcoal/50 tracking-wide">
+                                🧶 Handmade
+                            </span>
+                            <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-vanilla border border-border/60 text-[11px] font-bold text-charcoal/50 tracking-wide">
+                                🌿 Premium Yarn
+                            </span>
+                            <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-vanilla border border-border/60 text-[11px] font-bold text-charcoal/50 tracking-wide">
+                                🔒 Secure Checkout
+                            </span>
                         </div>
                     </div>
                 </div>
@@ -205,6 +237,23 @@ export function ProductDetailsClient({ product, relatedProducts }: { product: Pr
                         </div>
                     </div>
                 )}
+            </div>
+
+            {/* Sticky Mobile CTA */}
+            <div className={`fixed bottom-0 left-0 right-0 z-30 lg:hidden transition-transform duration-300 ${showStickyCTA ? 'translate-y-0' : 'translate-y-full'}`}>
+                <div className="bg-white/90 backdrop-blur-xl border-t border-border/60 px-4 py-3 flex items-center gap-3 safe-area-bottom">
+                    <div className="flex-1 min-w-0">
+                        <p className="font-display font-bold text-[15px] text-charcoal truncate">{product.name_en}</p>
+                        <p className="text-melon font-bold text-[14px]">৳{product.price}</p>
+                    </div>
+                    <button
+                        onClick={handleAddToCart}
+                        disabled={product.stock === 0}
+                        className={`btn-primary px-6 py-3 text-[13px] uppercase tracking-widest shrink-0 ${isAdded ? '!bg-mint !text-charcoal' : ''}`}
+                    >
+                        {product.stock === 0 ? "Sold Out" : isAdded ? "Added ✓" : "Add to Cart"}
+                    </button>
+                </div>
             </div>
         </div>
     );
