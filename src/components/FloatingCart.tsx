@@ -25,7 +25,7 @@ export function FloatingCart() {
     return (
         <Link
             href="/cart"
-            className="fixed bottom-[110px] right-6 sm:right-8 z-50 w-14 h-14 bg-charcoal text-white rounded-full flex items-center justify-center shadow-lg hover:-translate-y-1 hover:shadow-xl transition-all duration-300 group"
+            className="fixed bottom-[140px] right-6 sm:right-8 z-50 w-14 h-14 bg-charcoal text-white rounded-full flex items-center justify-center shadow-lg hover:-translate-y-1 hover:shadow-xl transition-all duration-300 group"
             aria-label="View Cart"
         >
             <svg

@@ -47,26 +47,26 @@ export function DiarySnippet({ product }: { product: Product }) {
                             }}
                         >
                             <p className="mb-6 pt-1">
-                                Handcrafting this <strong className="text-charcoal bg-rose/20 px-1 rounded-sm">handmade crochet {product.name_en.toLowerCase()}</strong> was an absolute joy!
+                                Handcrafting this <strong className="text-charcoal bg-rose/20 px-1 rounded-sm">Handmade crochet {product.name_en}</strong> was an absolute joy!
                                 This year, kawaii crochet amigurumi is all about maximizing the squish factor, and I think we totally nailed it here.
                             </p>
 
                             <p className="mb-6">
                                 My main goal was to design something technically durable but overwhelmingly cute.
-                                Whether you use it as a <strong className="text-charcoal bg-mint/20 px-1 rounded-sm">cute stuffed animal</strong> for your desk, or attach it as a handmade bag charm, it&apos;s engineered to bring a smile.
+                                Whether you use it as a <strong className="text-charcoal bg-mint/20 px-1 rounded-sm">Cute stuffed animal</strong> for your desk, or attach it as a handmade bag charm, it&apos;s engineered to bring a smile.
                             </p>
 
                             <p className="mb-6">
                                 We utilize premium, hypoallergenic yarn sourced exclusively for our handcrafted crochet gifts.
                                 By keeping the production entirely handmade in Dhaka, Bangladesh, we ensure every single loop is packed with perfection.
-                                Nothing beats authentic, <strong className="text-charcoal bg-babyblue/20 px-1 rounded-sm">retro crochet toys</strong> that stand the test of time!
+                                Nothing beats authentic, <strong className="text-charcoal bg-babyblue/20 px-1 rounded-sm">Retro crochet toys</strong> that stand the test of time!
                             </p>
                         </div>
 
                         {/* Hand-drawn underline / signature area */}
                         <div className="mt-12 text-right">
                             <span style={{ fontFamily: 'var(--font-handwriting)' }} className="text-2xl text-charcoal block -rotate-3 mr-4">
-                                — crafted with love 💖
+                                — Crafted with love 💖
                             </span>
                         </div>
                     </div>
