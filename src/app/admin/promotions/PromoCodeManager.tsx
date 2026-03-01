@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
+import { useRouter } from "next/navigation";
 import { Plus, Tag, Trash2, Loader2 } from "lucide-react";
 import { createPromoCode, deletePromoCode } from "./actions";
 import { toast } from "sonner";
@@ -14,6 +15,7 @@ export interface PromoCode {
 }
 
 export function PromoCodeManager({ initialCodes }: { initialCodes: PromoCode[] }) {
+    const router = useRouter();
     const [isCreating, setIsCreating] = useState(false);
 
     const handleCreate = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -28,6 +30,7 @@ export function PromoCodeManager({ initialCodes }: { initialCodes: PromoCode[] }
         } else {
             toast.success("Promo code created successfully!");
             (e.target as HTMLFormElement).reset();
+            router.refresh();
         }
 
         setIsCreating(false);
@@ -103,6 +106,7 @@ export function PromoCodeManager({ initialCodes }: { initialCodes: PromoCode[] }
                                                 success: 'Promo code deleted.',
                                                 error: 'Failed to delete.'
                                             });
+                                            router.refresh();
                                         }}
                                         className="p-1.5 text-os-text-muted hover:text-os-danger hover:bg-os-danger/10 rounded transition-colors"
                                     >

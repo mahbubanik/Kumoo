@@ -1,6 +1,6 @@
 import React from 'react';
 import { createClient } from '@/utils/supabase/server';
-import { UserCircle, Filter } from 'lucide-react';
+import { UserCircle } from 'lucide-react';
 
 export default async function AdminCustomersPage() {
     const supabase = await createClient();
@@ -18,9 +18,9 @@ export default async function AdminCustomersPage() {
                     <h1 className="font-display font-bold text-2xl text-os-primary mb-1">Customers CRM</h1>
                     <p className="text-os-text-muted font-medium text-sm">Manage shoppers, track lifetime value, and view histories.</p>
                 </div>
-                <button className="os-btn-secondary flex items-center gap-2">
-                    <Filter className="w-4 h-4" /> Filter Segments
-                </button>
+                <span className="text-xs font-medium text-os-text-muted bg-os-bg px-3 py-1 rounded-full border border-os-border">
+                    {(customers || []).length} Total
+                </span>
             </header>
 
             <div className="os-panel">
@@ -61,7 +61,9 @@ export default async function AdminCustomersPage() {
                                             ৳{customer.total_spend || 0}
                                         </td>
                                         <td className="os-table-td text-right">
-                                            <button className="text-os-text-muted hover:text-os-primary font-medium text-xs transition-colors">View Profile</button>
+                                            <span className="text-os-text-muted font-medium text-xs">
+                                                {customer.order_count || 0} order{(customer.order_count || 0) !== 1 ? 's' : ''}
+                                            </span>
                                         </td>
                                     </tr>
                                 );
